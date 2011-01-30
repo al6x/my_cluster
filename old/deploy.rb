@@ -14,8 +14,8 @@ set :use_sudo, true
 
 namespace :gems do
   desc "Install gems"
-  task :install, :roles => :app do
-    sudo "cd #{current_path} && rake RAILS_ENV=production gems:install", :as => 'root'
+  task :install, roles: :app do
+    sudo "cd #{current_path} && rake RAILS_ENV=production gems:install", as: 'root'
   end
 end
 
@@ -59,13 +59,13 @@ namespace :deploy do
     # run "cd #{release_path}/vendor/plugins && rm -r annotate_models"
   end
     
-  task :restart, :roles => :app, :except => { :no_release => true } do
+  task :restart, roles: :app, except: { :no_release => true } do
     run "touch #{current_path}/tmp/restart.txt"
   end
   
   [:start, :stop].each do |t|
     desc "#{t} task is a no-op with mod_rails"
-    task t, :roles => :app do ; end
+    task t, roles: :app do ; end
   end
   
 end
