@@ -1,1 +1,1 @@
-Tools for cluster management for my projects.
+Tools for cluster management, for my projects.
