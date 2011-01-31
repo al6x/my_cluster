@@ -4,6 +4,9 @@ require 'rsh'
 require 'ros'
 require 'tmpdir'
 
+require 'rake_ext'
+delete_task :default
+
 #
 # Config
 #
@@ -22,7 +25,7 @@ end
 
 def config
   unless @config
-    dir = File.expand_path "#{__FILE__.dirname}/.."    
+    dir = File.expand_path "#{__FILE__.dirname}/../.."    
     @config = DeployConfig.new
     @config.config_dir = "#{dir}/config"
     @config.merge_config! "#{@config.config_dir!}/config.yml"

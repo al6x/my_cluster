@@ -1,0 +1,3 @@
+ssh:
+  user: some_username
+  password: some_password

@@ -1,9 +1,8 @@
-lib_dir = "#{File.dirname __FILE__}/lib"
-$LOAD_PATH << lib_dir unless File.exist? lib_dir
+%w(lib tasks).each do |name|
+  lib_dir = "#{File.dirname __FILE__}/#{name}"
+  $LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
+end
 
-require 'rake_ext'
-delete_task :default
-
-require 'deploy'
+require 'cluster/support'
 
 require 'box/base'
