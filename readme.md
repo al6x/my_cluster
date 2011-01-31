@@ -2,7 +2,7 @@
 
 For my projects, but maybe it will be also usefull for yours.
 
-Define your configuration (use config.example as sample), to install :base package on new box (I'm using ubuntu 10.04) type:
+Define your configuration (use config.example), and try to install the :base package on a new box (I'm using ubuntu 10.04):
 
     $ rake box:base host=universal.4ire.net
     
