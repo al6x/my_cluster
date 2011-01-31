@@ -42,6 +42,35 @@ end
 
 
 #
+# Ros
+#
+module Ros
+  class Dsl
+    # combine applied? and apply in one.
+    def apply_once &b      
+      applied?{|box| box.has_mark? name}
+      apply do |box|
+        b.call box
+        box.mark name
+      end
+    end
+  end
+end
+
+
+#
+# Rsh
+#
+module Rsh
+  class Box
+    def apt cmd, ignore_stderr = false
+      bash "env DEBIAN_FRONTEND=noninteractive apt-get -y #{cmd}", ignore_stderr
+    end
+  end
+end
+
+
+#
 # boxes
 #
 def boxes

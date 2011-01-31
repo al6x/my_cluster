@@ -6,4 +6,4 @@ delete_task :default
 
 require 'deploy'
 
-require 'tasks/initialize_os'
+require 'box/base'
