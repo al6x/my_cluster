@@ -2,7 +2,7 @@ require 'ruby_ext'
 require 'yaml'
 require 'rsh'
 require 'ros'
-
+require 'tmpdir'
 
 #
 # Config
@@ -49,10 +49,8 @@ module Ros
     # combine applied? and apply in one.
     def apply_once &b      
       applied?{|box| box.has_mark? name}
-      apply do |box|
-        b.call box
-        box.mark name
-      end
+      apply &b
+      after_applying{|box| box.mark name}      
     end
   end
 end
