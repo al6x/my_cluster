@@ -1,11 +1,15 @@
-require 'ruby_ext'
 require 'yaml'
-require 'rsh'
-require 'ros'
 require 'tmpdir'
 
+require 'ruby_ext'
+
+require 'rsh'
+require 'cluster_management'
+require 'cluster_management/integration/rsh'
+
+
 require 'rake_ext'
-delete_task :default
+%w(default spec spec:isolated).each{|name| delete_task name}
 
 #
 # Config
@@ -43,29 +47,23 @@ def log_operation msg, &block
   print "done\n"
 end
 
-
-#
-# Ros
-#
-module Ros
-  class Dsl
-    # combine applied? and apply in one.
-    def apply_once &b      
-      applied?{|box| box.has_mark? name}
-      apply &b
-      after_applying{|box| box.mark name}      
-    end
-  end
-end
-
-
 #
 # Rsh
 #
 module Rsh
   class Box
-    def apt cmd, ignore_stderr = false
-      bash "env DEBIAN_FRONTEND=noninteractive apt-get -y #{cmd}", ignore_stderr
+    def packager cmd, options = {}
+      bash "env DEBIAN_FRONTEND=noninteractive apt-get -y #{cmd}", options
+    end
+    
+    def append_to path, text, options = {}
+      reload = options.delete :reload
+      raise "invalid options #{options.keys}" unless options.empty?
+      
+      text.split("\n").each do |line|
+        bash "echo '#{line}' >> #{path}"
+      end
+      bash ". #{path}" if reload
     end
   end
 end
@@ -74,15 +72,15 @@ end
 #
 # boxes
 #
-def boxes
-  unless @boxes
-    @boxes = []
+module ClusterManagement
+  def self.boxes
+    unless @boxes    
+      host = ENV['host'] || raise(":host not defined!")
+      box = Rsh::Box.new host: host, ssh: config.ssh!.to_h
+      box.open
     
-    host = ENV['host'] || raise(":host not defined!")
-    box = Rsh::Box.new host: host, ssh: config.ssh!.to_h
-    box.open_connection
-    
-    @boxes << box
+      @boxes = [box]
+    end
+    @boxes
   end
-  @boxes
 end
