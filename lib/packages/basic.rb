@@ -7,7 +7,7 @@ namespace :basic do
     apply_once do
       [config.app_path!, config.data_path!].each{|dir| box.create_directory dir}
     end
-    verify{|box| box.bash('cat /etc/lsb-release') =~ /DISTRIB_RELEASE=10.04/}    
+    verify{box.bash('cat /etc/lsb-release') =~ /DISTRIB_RELEASE=10.04/}    
   end
   
   
@@ -38,7 +38,7 @@ namespace :basic do
       path, remote_path = "#{config.config_dir!}/authorized_keys", '~/.ssh/authorized_keys'
       box.upload_file path, remote_path, override: true if File.exist? path
     end    
-    verify{|box| box.bash('which mc') =~ /mc/}
+    verify{box.bash('which mc') =~ /mc/}
   end  
   
   
@@ -72,7 +72,7 @@ namespace :basic do
     apply_once do
       box.packager 'install git-core'
     end
-    verify{|box| box.bash('git --version') =~ /git version/}
+    verify{box.bash('git --version') =~ /git version/}
   end
     
     
@@ -81,7 +81,7 @@ namespace :basic do
   #   apply_once do
   #     box.bash 'bash < <( curl -L http://bit.ly/rvm-install-system-wide )', true
   #   end
-  #   verify{|box| box.bash('rvm info') =~ /version.*rvm/}
+  #   verify{box.bash('rvm info') =~ /version.*rvm/}
   # end  
   
   
@@ -133,7 +133,7 @@ namespace :basic do
         [original_file, updated_file].each{|f| File.delete f if File.exist? f}
       end
     end    
-    verify{|box| box.bash('ruby -v') =~ /ruby 1.9.2/}
+    verify{box.bash('ruby -v') =~ /ruby 1.9.2/}
   end
     
   
@@ -143,7 +143,7 @@ namespace :basic do
       fg_git = "git://github.com/alexeypetrushin/fake_gem.git"
       box.bash "cd #{config.app_path!} && git clone #{fg_git}"
     end
-    verify{|box| box.file_exist? "#{config.app_path!}/fake_gem/lib/fake_gem.rb"}
+    verify{box.file_exist? "#{config.app_path!}/fake_gem/lib/fake_gem.rb"}
   end
   
   
@@ -159,7 +159,7 @@ export RUBYOPT="-Ku -rrubygems -r#{config.app_path!}/fake_gem/lib/fake_gem.rb"
       
       box.append_to '/etc/environment', text, reload: true
     end
-    verify{|box| box.bash('ruby -v') =~ /ruby/}
+    verify{box.bash('ruby -v') =~ /ruby/}
   end
 end
 

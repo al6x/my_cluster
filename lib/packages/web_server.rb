@@ -8,6 +8,6 @@ namespace :web_server do
       box.packager "install nginx"      
       box.append_to "/etc/environment", File.read("#{__FILE__.dirname}/web_server/nginx.sh"), reload: true
     end
-    verify{|box| box.bash('nginx -v', ignore_stderr: true) =~ /nginx/}
+    verify{box.bash('nginx -v', ignore_stderr: true) =~ /nginx/}
   end
 end
