@@ -1,14 +1,16 @@
 require 'yaml'
 require 'tmpdir'
 
+# $ gem install ruby_ext
 require 'ruby_ext'
-
-require 'rsh'
-require 'cluster_management'
-require 'cluster_management/integration/rsh'
-
-
 require 'rake_ext'
+
+# $ gem install vos
+require 'vos'
+
+# $ gem install cluster_management
+require 'cluster_management'
+
 %w(default spec spec:isolated).each{|name| delete_task name}
 
 #
@@ -48,26 +50,30 @@ def log_operation msg, &block
 end
 
 #
-# Rsh
+# Vos
 #
-module Rsh
+# module Vos
+#   class Box
+#     # def packager cmd, options = {}
+#     #   bash "env DEBIAN_FRONTEND=noninteractive apt-get -y #{cmd}", options
+#     # end
+#     
+#     # def append_to path, text, options = {}
+#     #   reload = options.delete :reload
+#     #   raise "invalid options #{options.keys}" unless options.empty?
+#     #   
+#     #   text.split("\n").each do |line|
+#     #     bash "echo '#{line}' >> #{path}"
+#     #   end
+#     #   bash ". #{path}" if reload
+#     # end
+#   end
+# end
+module Vos
   class Box
-    def packager cmd, options = {}
-      bash "env DEBIAN_FRONTEND=noninteractive apt-get -y #{cmd}", options
-    end
-    
-    def append_to path, text, options = {}
-      reload = options.delete :reload
-      raise "invalid options #{options.keys}" unless options.empty?
-      
-      text.split("\n").each do |line|
-        bash "echo '#{line}' >> #{path}"
-      end
-      bash ". #{path}" if reload
-    end
+    include Helpers::Ubuntu
   end
 end
-
 
 #
 # boxes
@@ -76,9 +82,9 @@ module ClusterManagement
   def self.boxes
     unless @boxes    
       host = ENV['host'] || raise(":host not defined!")
-      box = Rsh::Box.new host: host, ssh: config.ssh!.to_h
+      box = Vos::Box.new host: host, ssh: config.ssh!.to_h      
       box.open
-    
+      
       @boxes = [box]
     end
     @boxes

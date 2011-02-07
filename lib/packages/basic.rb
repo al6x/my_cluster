@@ -5,7 +5,9 @@ namespace :basic do
   desc 'Checks OS version and add some very basic stuff'
   package :os do
     apply_once do
-      [config.app_path!, config.data_path!].each{|dir| box.create_directory dir}
+      [config.app_path!, config.data_path!].each do |dir| 
+        box[dir].create
+      end                  
     end
     verify{box.bash('cat /etc/lsb-release') =~ /DISTRIB_RELEASE=10.04/}    
   end
@@ -14,39 +16,32 @@ namespace :basic do
   desc 'security'
   package :security do
     apply_once do      
-      ssh_config = "#{config.config_dir!}/ssh_config"
-      box.upload_file ssh_config, '/etc/ssh/ssh_config', override: true if File.exist? ssh_config
+      ssh_config = "#{config.config_dir!}/ssh_config".to_file
+      ssh_config.copy_to! box['/etc/ssh/ssh_config'] if ssh_config.exist?
+      # box.upload_file ssh_config, '/etc/ssh/ssh_config', override: true if File.exist? ssh_config
       
-      box.create_directory "~/.ssh", silent: true
+      box.dir("~/.ssh").create
+      # box.create_directory "~/.ssh", silent: true
       {
-        "#{config.config_dir!}/id_rsa" => "~/.ssh/id_rsa",
-        "#{config.config_dir!}/id_rsa.pub" => "~/.ssh/id_rsa.pub"
+        "#{config.config_dir!}/id_rsa".to_file => "~/.ssh/id_rsa",
+        "#{config.config_dir!}/id_rsa.pub".to_file => "~/.ssh/id_rsa.pub"
       }.each do |from, to|        
-        box.upload_file from, to, override: true if File.exist? from
+        # box.upload_file from, to, override: true if File.exist? from
+        from.copy_to! box[to] if from.exist?
       end
       box.bash "chmod -R go-rwx ~/.ssh"
     end
   end
     
     
-  desc 'Makes box handy for manual management'
-  package manual_management: [:os, :security] do
-    apply_once do
-      box.packager 'install mc'
-      box.packager 'install locate'
-
-      path, remote_path = "#{config.config_dir!}/authorized_keys", '~/.ssh/authorized_keys'
-      box.upload_file path, remote_path, override: true if File.exist? path
-    end    
-    verify{box.bash('which mc') =~ /mc/}
-  end  
-  
-  
   desc 'System tools, mainly for build support'
   package system_tools: :os do
     apply_once do
-      box.packager 'update', ignore_stderr: true
-      box.packager 'upgrade', ignore_stderr: true
+      st_env = "#{__FILE__.dirname}/basic/system_tools.sh".to_file
+      box.append_to_environment st_env
+      
+      box.bash 'packager update'
+      box.bash 'packager upgrade'
       
       tools = %w(        
         gcc 
@@ -60,17 +55,29 @@ namespace :basic do
         autoconf 
         htop
       )
-      box.packager "install #{tools.join(' ')}"
-      
-      box.append_to environment_file, File.read("#{__FILE__.dirname}/basic/system_tools.sh"), reload: true
+      box.bash "packager install #{tools.join(' ')}"
     end
   end  
+  
+  
+  desc 'Makes box handy for manual management'
+  package manual_management: [:os, :security, :system_tools] do
+    apply_once do
+      box.bash 'packager install mc'
+      box.bash 'packager install locate'
+
+      authorized_keys, target = "#{config.config_dir!}/authorized_keys".to_file, box['~/.ssh/authorized_keys']
+      authorized_keys.copy_to! target if authorized_keys.exist?
+      # box.upload_file authorized_keys, remote_path, override: true if File.exist? authorized_keys
+    end    
+    verify{box.bash('which mc') =~ /mc/}
+  end
   
   
   desc 'git'
   package git: :system_tools do
     apply_once do
-      box.packager 'install git-core'
+      box.bash 'packager install git-core'
     end
     verify{box.bash('git --version') =~ /git version/}
   end
@@ -92,45 +99,22 @@ namespace :basic do
       ruby_name = "ruby-1.9.2-p136"
       
       log_operation 'building' do
-        box.remove_file "#{ruby_name}.tar.gz", silent: true
-        box.remove_directory ruby_name, silent: true        
-        
-        box.bash "wget ftp://ftp.ruby-lang.org//pub/ruby/1.9/#{ruby_name}.tar.gz", ignore_stderr: true
-        box.bash "tar -xvzf #{ruby_name}.tar.gz"
+        box.tmp do |tmp|
+          tmp.bash "wget ftp://ftp.ruby-lang.org//pub/ruby/1.9/#{ruby_name}.tar.gz"
+          tmp.bash "tar -xvzf #{ruby_name}.tar.gz"
                       
-        box.bash("cd #{ruby_name} && ./configure --prefix=#{installation_dir}")
-        box.bash 'cd #{ruby_name} && make && make install'
-        
-        box.bash "rm -r #{ruby_name}"
-        box.bash "rm #{ruby_name}.tar.gz"
+          src_dir = tmp[ruby_name]
+          src_dir.bash "./configure --prefix=#{installation_dir}"
+          src_dir.bash 'make && make install'
+        end
       end
 
       log_operation 'updating path' do
-        environment_file = '/etc/environment'
-
-        tmpdir = Dir.tmpdir
-        original_file, updated_file = "#{tmpdir}/env_original", "#{tmpdir}/env_updated"
-        box.download_file environment_file, original_file, override: true
-      
-        content = File.read(original_file)
-        path_re = /(?<path>PATH=".*")/
-        path = if match = path_re.match(content)
-          match[:path]
-        else
-          %(PATH="")
+        bindir = "#{installation_dir}/bin"
+        unless box.env_file.content =~ /PATH.*#{bindir}/
+          box.env_file.append %(\nPATH="$PATH:#{bindir}"\n)
+          box.reload_env
         end
-
-        bindir = "#{installation_dir}/bin"        
-        unless path.include? bindir
-          path.insert -2, ":#{bindir}"
-          updated_content = content.sub(path_re, path)
-      
-          File.write(updated_file, updated_content)
-          box.upload_file(updated_file, environment_file, override: true)
-      
-          box.bash ". #{environment_file}"
-        end
-        [original_file, updated_file].each{|f| File.delete f if File.exist? f}
       end
     end    
     verify{box.bash('ruby -v') =~ /ruby 1.9.2/}
@@ -138,26 +122,30 @@ namespace :basic do
     
   
   desc "fake_gem"
-  package :fake_gem do
+  package fake_gem: :ruby do
     apply_once do
+      box["#{config.app_path!}/fake_gem"].destroy
       fg_git = "git://github.com/alexeypetrushin/fake_gem.git"
-      box.bash "cd #{config.app_path!} && git clone #{fg_git}"
+      box[config.app_path!].bash "git clone #{fg_git}"
     end
-    verify{box.file_exist? "#{config.app_path!}/fake_gem/lib/fake_gem.rb"}
+    verify{box["#{config.app_path!}/fake_gem/lib/fake_gem.rb"].exist?}
   end
   
   
   desc 'custom ruby (with encoding globally set to unicode and enabled fake_gem hack)'
-  package :custom_ruby => :fake_gem do
+  package custom_ruby: :fake_gem do
     apply_once do
-      text = <<-BASH
+      unless box.env_file.content =~ /FAKE_GEM_PATH/
+        text = <<-BASH
       
 # custom ruby
 export FAKE_GEM_PATH="#{config.app_path!}"
 export RUBYOPT="-Ku -rrubygems -r#{config.app_path!}/fake_gem/lib/fake_gem.rb"        
-      BASH
+        BASH
       
-      box.append_to '/etc/environment', text, reload: true
+        box.env_file.append text
+        box.reload_env
+      end
     end
     verify{box.bash('ruby -v') =~ /ruby/}
   end

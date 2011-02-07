@@ -4,16 +4,16 @@ package :db => %w(mongodb).collect{|name| "db:#{name}"}
 namespace :db do  
   desc 'MongoDB'
   package mongodb: :basic do
+    data_dir = "#{config.data_path!}/mongodb"
     apply_once do      
-      box.packager 'install mongodb', ignore_stderr: true
-      data_dir = "#{config.data_path!}/mongodb"
-      box.create_directory data_dir
+      box.bash 'packager install mongodb'      
+      box[data_dir].create
       
-      box.append_to "/etc/environment", File.read("#{__FILE__.dirname}/db/mongodb.sh"), reload: true
+      box.append_to_environment "#{__FILE__.dirname}/db/mongodb.sh".to_file
     end
     verify do 
       (box.bash('mongo --version') =~ /MongoDB/) and 
-      (box.directory_exist?("#{config.data_path!}/mongodb"))
+      (box[data_dir].dir?)
     end
   end
 end

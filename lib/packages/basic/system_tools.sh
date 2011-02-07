@@ -6,7 +6,7 @@ function packager(){
   elif [ "$method" = "search" ]; then
     shift; aptitude search $*
   else
-    apt-get $*
+    apt-get -y $*
   fi
 }
 
