@@ -108,8 +108,12 @@ namespace :basic do
           src_dir.bash 'make && make install'
         end
       end
+      
+      log_operation 'configuring' do
+        box.home('.gemrc').write! "gem: --no-ri --no-rdoc\n"
+      end
 
-      log_operation 'updating path' do
+      log_operation 'updating environment' do
         bindir = "#{installation_dir}/bin"
         unless box.env_file.content =~ /PATH.*#{bindir}/
           box.env_file.append %(\nPATH="$PATH:#{bindir}"\n)
