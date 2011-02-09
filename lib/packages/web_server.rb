@@ -6,7 +6,7 @@ namespace :web_server do
   package nginx: :basic do
     apply_once do
       box.bash 'packager install nginx'
-      box.append_to_environment "#{__FILE__.dirname}/web_server/nginx.sh".to_file
+      "#{__FILE__.dirname}/web_server/nginx.sh".to_file.append_to_environment_of box
     end
     verify{box.bash('which nginx') =~ /nginx/}
   end

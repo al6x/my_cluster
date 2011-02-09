@@ -9,7 +9,7 @@ namespace :db do
       box.bash 'packager install mongodb'      
       box[data_dir].create
       
-      box.append_to_environment "#{__FILE__.dirname}/db/mongodb.sh".to_file
+      "#{__FILE__.dirname}/db/mongodb.sh".to_file.append_to_environment_of box
     end
     verify do 
       (box.bash('mongo --version') =~ /MongoDB/) and 

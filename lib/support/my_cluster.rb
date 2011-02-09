@@ -82,7 +82,12 @@ module ClusterManagement
   def self.boxes
     unless @boxes    
       host = ENV['host'] || raise(":host not defined!")
-      box = Vos::Box.new host: host, ssh: config.ssh!.to_h      
+      box = if config.ssh?
+        Vos::Box.new host, config.ssh.to_h
+      else
+        # will be authenticated using your id_rsa
+        Vos::Box.new host
+      end
       box.open
       
       @boxes = [box]

@@ -1,7 +1,7 @@
 desc 'Basic box for my cluster (used as a base for another packages)'
 package basic: %w(ruby git security manual_management fake_gem custom_ruby).collect{|name| "basic:#{name}"}
 
-namespace :basic do  
+namespace :basic do
   desc 'Checks OS version and add some very basic stuff'
   package :os do
     apply_once do
@@ -37,8 +37,7 @@ namespace :basic do
   desc 'System tools, mainly for build support'
   package system_tools: :os do
     apply_once do
-      st_env = "#{__FILE__.dirname}/basic/system_tools.sh".to_file
-      box.append_to_environment st_env
+      "#{__FILE__.dirname}/basic/system_tools.sh".to_file.append_to_environment_of box
       
       box.bash 'packager update'
       box.bash 'packager upgrade'
@@ -116,7 +115,7 @@ namespace :basic do
       log_operation 'updating environment' do
         bindir = "#{installation_dir}/bin"
         unless box.env_file.content =~ /PATH.*#{bindir}/
-          box.env_file.append %(\nPATH="$PATH:#{bindir}"\n)
+          box.env_file.append %(\nexport PATH="$PATH:#{bindir}"\n)
           box.reload_env
         end
       end
