@@ -39,22 +39,26 @@ def config
   @config
 end
 
+def logger
+  ClusterManagement.logger
+end
+
 
 #
 # Logging
 #
-def log_operation msg, &block
-  print "  #{msg} ... "
-  block.call
-  print "done\n"
-end
+# def log_operation msg, &block
+#   print "  #{msg} ... "
+#   block.call
+#   print "done\n"
+# end
 
 #
 # Vos
 #
 # module Vos
 #   class Box
-#     # def packager cmd, options = {}
+#     # def box_task cmd, options = {}
 #     #   bash "env DEBIAN_FRONTEND=noninteractive apt-get -y #{cmd}", options
 #     # end
 #     

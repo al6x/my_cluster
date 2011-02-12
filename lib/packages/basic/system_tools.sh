@@ -11,4 +11,6 @@ function packager(){
 }
 
 # htop
-alias profiler="htop"
+function profiler(){
+	htop $*
+}

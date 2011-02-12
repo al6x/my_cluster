@@ -1,9 +1,13 @@
-desc 'app server'
-package :app_server => %w(thin).collect{|name| "app_server:#{name}"} 
-
 namespace :app_server do
+  desc 'app server'
+  box_task :install => %w(
+    thin:install
+  )
+end
+
+namespace :thin do
   desc 'Thin App Server'
-  package thin: :basic do
+  box_task install: 'basic:install' do
     apply_once do
       box.bash 'gem install thin'
     end

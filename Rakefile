@@ -8,6 +8,8 @@ require 'support/my_cluster'
   app_server
   web_server
   db
+  
+  app
 ).each{|n| require "packages/#{n}"}
 
 %w(

@@ -1,9 +1,13 @@
-desc 'db'
-package :db => %w(mongodb).collect{|name| "db:#{name}"}
+namespace :db do
+  desc 'db'
+  box_task install: %w(
+    mongodb:install
+  )
+end
 
-namespace :db do  
+namespace :mongodb do  
   desc 'MongoDB'
-  package mongodb: :basic do
+  box_task install: 'basic:install' do
     data_dir = "#{config.data_path!}/mongodb"
     apply_once do      
       box.bash 'packager install mongodb'      
@@ -17,4 +21,3 @@ namespace :db do
     end
   end
 end
-

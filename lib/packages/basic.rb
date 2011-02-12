@@ -1,20 +1,30 @@
-desc 'Basic box for my cluster (used as a base for another packages)'
-package basic: %w(ruby git security manual_management fake_gem custom_ruby).collect{|name| "basic:#{name}"}
-
 namespace :basic do
+  desc 'Basic box for my cluster (used as a base for another packages)'
+  box_task install: %w(
+    ruby:install
+    git:install
+    security:install
+    manual_management:install
+    fake_gem:install
+    custom_ruby:install
+  )
+end
+
+namespace :os do
   desc 'Checks OS version and add some very basic stuff'
-  package :os do
+  box_task :install do
     apply_once do
-      [config.app_path!, config.data_path!].each do |dir| 
+      [config.apps_path!, config.data_path!].each do |dir| 
         box[dir].create
       end                  
     end
     verify{box.bash('cat /etc/lsb-release') =~ /DISTRIB_RELEASE=10.04/}    
   end
+end
   
-  
+namespace :security do  
   desc 'security'
-  package :security do
+  box_task install: 'os:install' do
     apply_once do      
       ssh_config = "#{config.config_dir!}/ssh_config".to_file
       ssh_config.copy_to! box['/etc/ssh/ssh_config'] if ssh_config.exist?
@@ -32,11 +42,13 @@ namespace :basic do
       box.bash "chmod -R go-rwx ~/.ssh"
     end
   end
-    
-    
+end
+
+   
+namespace :system_tools do
   desc 'System tools, mainly for build support'
-  package system_tools: :os do
-    apply_once do
+  box_task install: 'os:install', version: 3 do
+    apply_once do      
       "#{__FILE__.dirname}/basic/system_tools.sh".to_file.append_to_environment_of box
       
       box.bash 'packager update'
@@ -53,14 +65,17 @@ namespace :basic do
         bison 
         autoconf 
         htop
+        libxml2-dev
+        libxslt-dev
       )
       box.bash "packager install #{tools.join(' ')}"
     end
   end  
+end
   
-  
+namespace :manual_management do
   desc 'Makes box handy for manual management'
-  package manual_management: [:os, :security, :system_tools] do
+  box_task install: %w(os:install security:install system_tools:install) do
     apply_once do
       box.bash 'packager install mc'
       box.bash 'packager install locate'
@@ -71,84 +86,80 @@ namespace :basic do
     end    
     verify{box.bash('which mc') =~ /mc/}
   end
+end  
   
-  
+namespace :git do
   desc 'git'
-  package git: :system_tools do
+  box_task install: 'system_tools:install' do
     apply_once do
       box.bash 'packager install git-core'
     end
     verify{box.bash('git --version') =~ /git version/}
   end
-    
-    
-  # desc 'rvm'
-  # package rvm: [:system_tools] do
-  #   apply_once do
-  #     box.bash 'bash < <( curl -L http://bit.ly/rvm-install-system-wide )', true
-  #   end
-  #   verify{box.bash('rvm info') =~ /version.*rvm/}
-  # end  
-  
-  
+end
+      
+namespace :ruby do
   desc 'ruby'
-  package ruby: :system_tools do        
+  box_task install: 'system_tools:install' do        
     apply_once do
       installation_dir = '/usr/local/ruby'
       ruby_name = "ruby-1.9.2-p136"
       
-      log_operation 'building' do
-        box.tmp do |tmp|
-          tmp.bash "wget ftp://ftp.ruby-lang.org//pub/ruby/1.9/#{ruby_name}.tar.gz"
-          tmp.bash "tar -xvzf #{ruby_name}.tar.gz"
-                      
-          src_dir = tmp[ruby_name]
-          src_dir.bash "./configure --prefix=#{installation_dir}"
-          src_dir.bash 'make && make install'
-        end
+      logger.info '  building'
+      box.tmp do |tmp|
+        tmp.bash "wget ftp://ftp.ruby-lang.org//pub/ruby/1.9/#{ruby_name}.tar.gz"
+        tmp.bash "tar -xvzf #{ruby_name}.tar.gz"
+                    
+        src_dir = tmp[ruby_name]
+        src_dir.bash "./configure --prefix=#{installation_dir}"
+        src_dir.bash 'make && make install'
       end
       
-      log_operation 'configuring' do
-        box.home('.gemrc').write! "gem: --no-ri --no-rdoc\n"
-      end
+      logger.info '  configuring'
+      box.home('.gemrc').write! "gem: --no-ri --no-rdoc\n"
 
-      log_operation 'updating environment' do
-        bindir = "#{installation_dir}/bin"
-        unless box.env_file.content =~ /PATH.*#{bindir}/
-          box.env_file.append %(\nexport PATH="$PATH:#{bindir}"\n)
-          box.reload_env
-        end
+      logger.info '  updating environment'
+      bindir = "#{installation_dir}/bin"
+      unless box.env_file.content =~ /PATH.*#{bindir}/
+        box.env_file.append %(\nexport PATH="$PATH:#{bindir}"\n)
+        box.reload_env
       end
     end    
     verify{box.bash('ruby -v') =~ /ruby 1.9.2/}
   end
-    
+end    
   
+namespace :fake_gem do
   desc "fake_gem"
-  package fake_gem: :ruby do
+  box_task install: 'ruby:install' do
     apply_once do
-      box["#{config.app_path!}/fake_gem"].destroy
+      box["#{config.apps_path!}/fake_gem"].destroy
       fg_git = "git://github.com/alexeypetrushin/fake_gem.git"
-      box[config.app_path!].bash "git clone #{fg_git}"
+      box[config.apps_path!].bash "git clone #{fg_git}"
     end
-    verify{box["#{config.app_path!}/fake_gem/lib/fake_gem.rb"].exist?}
+    verify{box["#{config.apps_path!}/fake_gem/lib/fake_gem.rb"].exist?}
   end
+end
   
-  
+namespace :custom_ruby do
   desc 'custom ruby (with encoding globally set to unicode and enabled fake_gem hack)'
-  package custom_ruby: :fake_gem do
+  box_task install: %w(ruby:install fake_gem:install), version: 2 do
     apply_once do
+      logger.info "  fake_gem env"
       unless box.env_file.content =~ /FAKE_GEM_PATH/
         text = <<-BASH
       
 # custom ruby
-export FAKE_GEM_PATH="#{config.app_path!}"
-export RUBYOPT="-Ku -rrubygems -r#{config.app_path!}/fake_gem/lib/fake_gem.rb"        
+export FAKE_GEM_PATH="#{config.apps_path!}"
+export RUBYOPT="-Ku -rrubygems -r#{config.apps_path!}/fake_gem/lib/fake_gem.rb"        
         BASH
       
         box.env_file.append text
         box.reload_env
       end
+      
+      logger.info "  rspec"
+      box.bash 'gem install rspec'
     end
     verify{box.bash('ruby -v') =~ /ruby/}
   end
