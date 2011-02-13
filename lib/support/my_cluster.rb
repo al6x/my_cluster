@@ -1,5 +1,4 @@
 require 'yaml'
-require 'tmpdir'
 
 # $ gem install ruby_ext
 require 'ruby_ext'
@@ -9,9 +8,9 @@ require 'rake_ext'
 require 'vos'
 
 # $ gem install cluster_management
-require 'cluster_management'
+# require 'cluster_management'
 
-%w(default spec spec:isolated).each{|name| delete_task name}
+# %w(default spec spec:isolated).each{|name| delete_task name}
 
 #
 # Config
@@ -82,20 +81,18 @@ end
 #
 # boxes
 #
-module ClusterManagement
-  def self.boxes
-    unless @boxes    
-      host = ENV['host'] || raise(":host not defined!")
-      box = if config.ssh?
-        Vos::Box.new host, config.ssh.to_h
-      else
-        # will be authenticated using your id_rsa
-        Vos::Box.new host
-      end
-      box.open
-      
-      @boxes = [box]
-    end
-    @boxes
-  end
-end
+# def boxes
+#   unless @boxes    
+#     host = ENV['host'] || raise(":host not defined!")
+#     box = if config.ssh?
+#       Vos::Box.new host, config.ssh.to_h
+#     else
+#       # will be authenticated using your id_rsa
+#       Vos::Box.new host
+#     end
+#     box.open
+#     
+#     @boxes = [box]
+#   end
+#   @boxes
+# end

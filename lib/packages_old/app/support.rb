@@ -9,17 +9,17 @@ def app_task options
     
     apply_once do
       app.destroy
-      logger.info "  clonning git\n"
+      logger.info "  clonning git"
       apps.bash "git clone #{git}"
       
-      logger.info "  installing gems\n"      
+      logger.info "  installing gems"      
       out = app.bash('rake gem:install')
       if out =~ /Error/
         puts out
         raise 'Error during gem installation'
       end
       
-      logger.info "  running specs\n"
+      logger.info "  running specs"
       app.bash 'rake', /0 failures/
       
       instance_eval(&apply_once_block) if apply_once_block

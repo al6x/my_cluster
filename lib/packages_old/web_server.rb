@@ -1,7 +1,9 @@
 namespace :web_server do
   desc 'web server'
-  box_task install: %w(
-    nginx:install
+  box_task(
+    install: %w(
+      nginx:install
+    )
   )
 end
 

@@ -12,7 +12,7 @@ end
 
 namespace :os do
   desc 'Checks OS version and add some very basic stuff'
-  box_task :install do
+  box_task :install, 4 do
     apply_once do
       [config.apps_path!, config.data_path!].each do |dir| 
         box[dir].create

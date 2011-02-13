@@ -1,18 +1,20 @@
 namespace 'fake_gems' do
   desc 'fake_gems'
-  box_task :install => %w(
-    abstract_interface:install
-    asset_packager:install
-    class_loader:install
-    common_interface:install
-    micon:install
-    mongo_mapper_ext:install
-    rad_core:install
-    rad_ext:install
-    rad_jquery:install
-    rad_kit:install
-    ruby_ext:install
-    vfs:install
+  box_task(
+    install: %w(
+      abstract_interface:install
+      asset_packager:install
+      class_loader:install
+      common_interface:install
+      micon:install
+      mongo_mapper_ext:install
+      rad_core:install
+      rad_ext:install
+      rad_jquery:install
+      rad_kit:install
+      ruby_ext:install
+      vfs:install
+    )
   )
 end
 
@@ -35,6 +37,7 @@ namespace :abstract_interface do
   )
 end
 
+
 namespace :asset_packager do
   desc 'asset_packager'
   app_task(
@@ -42,6 +45,7 @@ namespace :asset_packager do
     name: 'asset_packager'
   )
 end
+
 
 namespace :class_loader do
   desc 'class_loader'
@@ -55,7 +59,7 @@ end
 namespace :common_interface do
   desc 'common_interface'
   app_task(
-    install: %w(basic:install abstract_interface:install rad_jquery:install),
+    install: %w(basic:install abstract_interface:install rad_jquery:install asset_packager:install),
     name: 'common_interface'
   )
 end
@@ -136,7 +140,13 @@ end
 namespace :rad_kit do
   desc 'rad_kit'
   app_task(
-    install: %w(basic:install rad_ext:install),
+    install: %w(
+      rad_ext:install
+      common_interface:install      
+      mongo_mapper_ext:install
+      
+      basic:install 
+    ),
     name: 'rad_kit'
   )
 end

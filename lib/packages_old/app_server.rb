@@ -1,7 +1,9 @@
 namespace :app_server do
   desc 'app server'
-  box_task :install => %w(
-    thin:install
+  box_task(
+    install: %w(
+      thin:install
+    )
   )
 end
 
