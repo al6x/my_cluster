@@ -1,7 +1,9 @@
 class Security < ClusterManagement::Service
   def install
-    apply_once do
-      require Os => :install
+    apply_once :install do
+      require Services::Os => :install
+      
+      logger.info "installing Security to #{box}"
       
       ssh_config = "#{config.config_dir!}/ssh_config".to_file
       ssh_config.copy_to! box['/etc/ssh/ssh_config'] if ssh_config.exist?

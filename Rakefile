@@ -8,21 +8,27 @@ $LOAD_PATH << lib_dir unless $LOAD_PATH.include? lib_dir
 require 'class_loader' 
 autoload_dir lib_dir
 
-require 'support/my_cluster'
+# $ gem install cluster_management
+require 'cluster_management'
+require 'cluster_management_ext/service'
+require 'cluster_management_ext/project'
 
-# %w(
-#   basic
-#   app_server
-#   web_server
-#   db
-#   
-#   app
-#   
-#   backup
-# ).each{|n| require "packages/#{n}"}
+# We are using Ubuntu
+module Vos
+  class Box
+    include Helpers::Ubuntu
+  end
+end
+
+# config
+dir = "#{__FILE__.dirname}/config"
+ClusterManagement.load_config "#{dir}/config.yml"
+def config; ClusterManagement.config end
+config.config_dir = dir
+
 # 
-# %w(
-# ).each{|n| require "deploy/#{n}"}
+# Tasks
+# 
 delete_task :default
 
 task :default do
@@ -30,6 +36,7 @@ task :default do
     box = config.ssh? ? Box.new(host.to_s, config.ssh.to_h) : Box.new(host.to_s)
     box.open
     
-    Services::Security.new(box).install
+    # Services::Basic.new(box).install
+    Projects::FireNet.new(box).install
   end
 end
