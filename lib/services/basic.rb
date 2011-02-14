@@ -2,7 +2,7 @@ class Basic < ClusterManagement::Service
   def install
     apply_once :install do
       require(
-        Services::Os => :install,
+        Services::Os => :install,        
         Services::Ruby => :install,
         Services::Git => :install,
         Services::Security => :install,

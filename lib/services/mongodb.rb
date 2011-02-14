@@ -5,19 +5,21 @@ class Mongodb < ClusterManagement::Service
     apply_once :install do
       require Services::Basic => :install
       
-      logger.info "installing Mongodb to #{box}"            
+      logger.info "installing MongoDB to #{box}"            
       
       box.bash 'packager install mongodb'      
-      box[data_dir].create
+      box[data_path].create
 
       box.tmp do |tmp|
         template = "#{__FILE__.dirname}/mongodb.sh".to_file
-        script = tmp[template.name].write template.read.gsub("%{data_dir}", data_dir)
+        script = tmp[template.name].write template.read.gsub("%{data_path}", data_path)
         script.append_to_environment_of box
       end
+      
+      box[data_path].create
 
       box.bash 'mongo --version', /MongoDB/
-      box[data_dir].dir?.must_be.true
+      box[data_path].dir?.must_be.true
     end
   end
   
@@ -30,12 +32,18 @@ class Mongodb < ClusterManagement::Service
       tmp_dump = tmp / 'mongodb_dump'
       
       logger.info "  dumping database to tmp file"
-      box.bash("mongodb dump --out #{tmp_dump.path}")
+      out = box.bash("mongodb dump --out #{tmp_dump.path}")      
+      unless out =~ /accounts_production.*to/ and out =~ /global_production.*to/
+        puts out
+        raise "erorr during MongoDB dump!"
+      end
       raise "unknown error, tmp backup file #{tmp_dump.path} hasn't been created!" unless tmp_dump.exist?
       
-      logger.info "  copying tmp file to backup storage"
-      tmp_dump.rsync_to path.to_dir
-      raise "unknown error, dump hasn't been copied to backup storage (#{path} is empty)!" unless path.to_entry.exist?
+      logger.info "  copying tmp file to backup storage"      
+      # tmp_dump.rsync_to path.to_dir can't use rsync hands if used with ssh, known bug
+      tmp_dump.copy_to path.to_dir
+      
+      raise "unknown error, dump hasn't been copied to backup storage (#{path} is empty)!" unless path.to_dir.exist?
     end
     logger.info "MongoDB has been dumped to #{path}"    
   end
@@ -49,11 +57,13 @@ class Mongodb < ClusterManagement::Service
       tmp_dump = tmp / 'mongodb_dump'
       
       logger.info "  copying dump to tmp file"
-      path.to_dir.rsync_to tmp_dump
+      # path.to_dir.rsync_to tmp_dump can't use rsync hands if used with ssh, known bug
+      path.to_dir.copy_to tmp_dump.to_dir
+
       raise "unknown error, tmp backup file #{tmp_dump.path} hasn't been created!" unless tmp_dump.exist?
       
       logger.info "  restoring MongoDB"
-      box.bash "mongodb restore #{tmp_dump.path}"
+      box.bash("mongodb restore #{tmp_dump.path}", /MongoDB has been restored/)
     end
     logger.info "MongoDB has been restored from #{path}"    
   end
@@ -74,11 +84,11 @@ class Mongodb < ClusterManagement::Service
     box.bash('ps -A') =~ /\smongod\s/
   end
   
-  def exec cmd
-    box.bash("mongodb shell --eval ")
-  end
+  # def exec cmd
+  #   box.bash("mongodb shell --eval ")
+  # end
   
-  def data_dir
+  def data_path
     "#{config.data_path!}/db"
   end
   

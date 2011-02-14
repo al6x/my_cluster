@@ -3,6 +3,7 @@ class Users < ClusterManagement::Project
     {
       require: {
         Services::Basic => :install,
+        Services::Fs => :install,
         
         Projects::RadKit => :install
       },

@@ -12,7 +12,7 @@ class ManualManagement < ClusterManagement::Service
       box.bash 'packager install mc'
       box.bash 'packager install locate'
 
-      authorized_keys, target = "#{config.config_dir!}/authorized_keys".to_file, box['~/.ssh/authorized_keys']
+      authorized_keys, target = "#{config.config_dir!}/services/manual_management/authorized_keys".to_file, box['~/.ssh/authorized_keys']
       authorized_keys.copy_to! target if authorized_keys.exist?
 
       box.bash 'which mc', /mc/

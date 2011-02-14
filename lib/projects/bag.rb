@@ -3,6 +3,7 @@ class Bag < ClusterManagement::Project
     {
       require: {
         Services::Basic => :install,
+        Services::Fs => :install,
         
         Projects::RadKit => :install,
         Projects::Users => :install
