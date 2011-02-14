@@ -1,10 +1,9 @@
 class RubyExt < ClusterManagement::Project
-  def project_options
-    {
-      require: {
-        Services::Basic => :install
-      },
-      name: 'ruby_ext'
-    }
-  end
+  version 2
+  project_options(
+    require: {
+      Services::Basic => :install
+    },
+    name: 'ruby_ext'
+  )
 end

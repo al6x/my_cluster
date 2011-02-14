@@ -1,15 +1,13 @@
 class RadExt < ClusterManagement::Project
-  def project_options
-    {
-      require: {
-        Services::Basic => :install,
-        Services::Thin => :install,
-        
-        Projects::RadCore => :install
-      },
-      name: 'rad_ext'
-    }
-  end
+  project_options(
+    require: {
+      Services::Basic => :install,
+      Services::Thin => :install,
+      
+      Projects::RadCore => :install
+    },
+    name: 'rad_ext'
+  )
   
   def install_apply_once
     text = <<-BASH

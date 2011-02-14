@@ -68,11 +68,3 @@ boxes[:db] = boxes[:db].first
 raise "fs server not defined!" unless boxes[:fs]
 raise "can't support more than one fs server!" if boxes[:fs] and (boxes[:fs].size > 1)
 boxes[:fs] = boxes[:fs].first
-
-# def close_all_boxes
-#   boxes[:all].every.close
-# end
-# 
-# def open_all_boxes
-#   boxes[:all].every.open
-# end

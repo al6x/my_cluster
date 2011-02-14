@@ -35,5 +35,22 @@ module ClusterManagement
         respond_to :install_verify
       end
     end
+    
+    
+    # 
+    # project_options
+    # 
+    class << self
+      inheritable_accessor :project_options, {}
+      alias_method :get_project_options, :project_options
+      def project_options options = nil
+        if options
+          get_project_options.merge! options
+        else
+          get_project_options
+        end
+      end
+    end
+    def project_options; self.class.project_options end
   end
 end
