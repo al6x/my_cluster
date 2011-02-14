@@ -9,6 +9,10 @@ function mongodb(){
     kill -2 $pid $*
   elif [ "$method" = "repair" ]; then
     shift; mongod --dbpath %{data_dir} --repair $*
+	elif [ "$method" = "dump" ]; then
+    shift; mongodump $*
+	elif [ "$method" = "restore" ]; then
+    shift; mongorestore $*
 	elif [ "$method" = "shell" ]; then
     shift; mongo $*
   else
