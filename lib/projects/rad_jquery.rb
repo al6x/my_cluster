@@ -1,10 +1,10 @@
 class RadJquery < ClusterManagement::Project
   project_options(
-    require: {
-      Services::Basic => :install,
+    require: [
+      Services::Basic,
       
-      Projects::RadCore => :install
-    },
+      Projects::RadCore
+    ],
     name: 'rad_jquery'
   )
 end

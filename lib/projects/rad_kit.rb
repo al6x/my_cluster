@@ -1,12 +1,12 @@
 class RadKit < ClusterManagement::Project
   project_options(
-    require: {
-      Services::Basic => :install,
+    require: [
+      Services::Basic,
       
-      Projects::RadCore => :install,
-      Projects::CommonInterface => :install,
-      Projects::MongoMapperExt => :install
-    },
+      Projects::RadCore,
+      Projects::CommonInterface,
+      Projects::MongoMapperExt
+    ],
     name: 'rad_kit'
   )
 end

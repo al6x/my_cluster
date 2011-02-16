@@ -10,8 +10,8 @@ class CustomRuby < ClusterManagement::Service
         text = <<-BASH
       
 # custom ruby
-export FAKE_GEM_PATH="#{config.apps_path!}"
-export RUBYOPT="-Ku -rrubygems -r#{config.apps_path!}/fake_gem/lib/fake_gem.rb"        
+export FAKE_GEM_PATH="#{config.projects_path!}"
+export RUBYOPT="-Ku -rrubygems -r#{config.projects_path!}/fake_gem/lib/fake_gem.rb"        
         BASH
       
         box.env_file.append text
@@ -23,5 +23,6 @@ export RUBYOPT="-Ku -rrubygems -r#{config.apps_path!}/fake_gem/lib/fake_gem.rb"
 
       box.bash 'ruby -v', /ruby/
     end
+    self
   end
 end

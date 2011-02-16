@@ -26,5 +26,6 @@ class SystemTools < ClusterManagement::Service
       )
       box.bash "packager install #{tools.join(' ')}"
     end
+    self
   end
 end

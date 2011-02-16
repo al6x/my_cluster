@@ -11,5 +11,6 @@ class Basic < ClusterManagement::Service
         Services::CustomRuby => :install,
       )
     end
+    self
   end
 end

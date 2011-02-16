@@ -1,12 +1,12 @@
 class CommonInterface < ClusterManagement::Project
   project_options(
-    require: {
-      Services::Basic => :install,
+    require: [
+      Services::Basic,
       
-      Projects::AbstractInterface => :install,
-      Projects::RadJquery => :install,
-      Projects::AssetPackager => :install
-    },
+      Projects::AbstractInterface,
+      Projects::RadJquery,
+      Projects::AssetPackager
+    ],
     name: 'common_interface'
   )
 end

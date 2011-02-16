@@ -9,5 +9,6 @@ class Git < ClusterManagement::Service
     
       box.bash 'git --version', /git version/
     end
+    self
   end
 end

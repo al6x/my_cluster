@@ -30,5 +30,6 @@ class Ruby < ClusterManagement::Service
       
       box.bash 'ruby -v', /ruby 1.9.2/
     end
+    self
   end
 end

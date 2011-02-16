@@ -10,9 +10,9 @@
 # 
 # Autoload paths
 # 
-my_cluster_dir = File.expand_path "#{File.dirname __FILE__}/../.."
+my_cluster_path = File.expand_path "#{File.dirname __FILE__}/../.."
 require 'class_loader'
-autoload_dir "#{my_cluster_dir}/lib"
+autoload_dir "#{my_cluster_path}/lib"
 
 
 # 
@@ -32,9 +32,9 @@ end
 # 
 # Config
 # 
-ClusterManagement.load_config "#{my_cluster_dir}/config/config.yml"
+ClusterManagement.load_config "#{my_cluster_path}/config/config.yml"
 def config; ClusterManagement.config end
-config.config_dir = "#{my_cluster_dir}/config"
+config.config_path = "#{my_cluster_path}/config"
 
 
 # 

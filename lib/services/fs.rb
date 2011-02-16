@@ -10,6 +10,7 @@ class Fs < ClusterManagement::Service
 
       box[data_path].dir?.must_be.true
     end
+    self
   end
   
   def dump_to path
@@ -18,6 +19,7 @@ class Fs < ClusterManagement::Service
     box.dir[data_path].copy_to path.to_dir
     raise "unknown error, files hasn't been copied to backup storage (#{path} is empty)!" unless path.to_dir.exist?
     logger.info "Fs has been dumped to #{path}"
+    self
   end
   
   def restore_from path
@@ -31,9 +33,11 @@ class Fs < ClusterManagement::Service
     
     raise "unknown error, backup file #{tmp_dump.path} hasn't been created!" unless fs.exist?
     logger.info "Fs has been restored from #{path}"
+    self
   end
   
-  def data_path
+  def self.data_path
     "#{config.data_path!}/fs"
   end
+  def data_path; self.class.data_path end
 end

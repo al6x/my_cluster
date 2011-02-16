@@ -5,6 +5,7 @@ module ClusterManagement
         start        
         raise "can't start #{self.class}" unless started?
       end
+      self            
     end
     
     def restart
@@ -12,6 +13,7 @@ module ClusterManagement
       raise "can't stop #{self.class}" if started?
       start
       raise "can't start #{self.class}" unless started?
+      self
     end
   end
 end

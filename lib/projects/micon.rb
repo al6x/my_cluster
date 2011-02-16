@@ -1,8 +1,8 @@
 class Micon < ClusterManagement::Project
   project_options(
-    require: {
-      Services::Basic => :install
-    },
+    require: [
+      Services::Basic
+    ],
     name: 'micon'
   )
 end

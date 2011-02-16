@@ -1,8 +1,8 @@
 class Vfs < ClusterManagement::Project
   project_options(
-    require: {
-      Services::Basic => :install
-    },
+    require: [
+      Services::Basic
+    ],
     name: 'vfs'
   )
 end

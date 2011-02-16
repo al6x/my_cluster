@@ -1,11 +1,21 @@
 # Load paths
-my_cluster_dir = File.dirname __FILE__
-$LOAD_PATH << "#{my_cluster_dir}/lib" unless $LOAD_PATH.include? "#{my_cluster_dir}/lib"
+my_cluster_path = File.dirname __FILE__
+$LOAD_PATH << "#{my_cluster_path}/lib" unless $LOAD_PATH.include? "#{my_cluster_path}/lib"
 
 require 'my_cluster/support'
 
 task :default do
-  boxes[:db].projects.ruby_ext.install
+  dir = __FILE__.dirname
+  # puts "#{dir}/lib/services/nginx/nginx.fire_net.conf".to_file.render(value: 10)
+  # boxes[:db].projects.rad_core.update
+  boxes[:db].services.nginx.install.restart
+  
+end
+
+task :deploy do
+  boxes[:app].each do |box|
+    box.projects.fire_net.deploy
+  end
 end
 
 task :install do
@@ -14,7 +24,7 @@ task :install do
   
   boxes[:app].each do |box| 
     box.services.thin.install
-    box.services.fire_net.install
+    box.projects.fire_net.install
   end
   
   boxes[:web].each do |box| 

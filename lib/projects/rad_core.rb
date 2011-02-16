@@ -1,14 +1,14 @@
 class RadCore < ClusterManagement::Project
   project_options(
-    require: {
-      Services::Basic => :install,
-      Services::Thin => :install,
+    require: [
+      Services::Basic,
+      Services::Thin,
       
-      Projects::RubyExt => :install,
-      Projects::Micon => :install,
-      Projects::Vfs => :install,
-      Projects::ClassLoader => :install
-    },
+      Projects::RubyExt,
+      Projects::Micon,
+      Projects::Vfs,
+      Projects::ClassLoader
+    ],
     name: 'rad_core'
   )
 end

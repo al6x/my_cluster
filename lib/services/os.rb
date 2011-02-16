@@ -5,5 +5,6 @@ class Os < ClusterManagement::Service
       
       box.bash 'cat /etc/lsb-release', /DISTRIB_RELEASE=10.04/
     end
+    self
   end
 end

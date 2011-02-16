@@ -1,11 +1,11 @@
 class RadExt < ClusterManagement::Project
   project_options(
-    require: {
-      Services::Basic => :install,
-      Services::Thin => :install,
+    require: [
+      Services::Basic,
+      Services::Thin,
       
-      Projects::RadCore => :install
-    },
+      Projects::RadCore
+    ],
     name: 'rad_ext'
   )
   
@@ -14,7 +14,7 @@ class RadExt < ClusterManagement::Project
   
 # rad
 function rad(){
-#{config.apps_path!}/rad_ext/bin/rad $*
+#{config.projects_path!}/rad_ext/bin/rad $*
 }
     BASH
     unless box.env_file.content.include? text

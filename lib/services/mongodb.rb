@@ -12,7 +12,7 @@ class Mongodb < ClusterManagement::Service
 
       box.tmp do |tmp|
         template = "#{__FILE__.dirname}/mongodb.sh".to_file
-        script = tmp[template.name].write template.read.gsub("%{data_path}", data_path)
+        script = tmp[template.name].write template.render(data_path: data_path)
         script.append_to_environment_of box
       end
       
@@ -21,6 +21,7 @@ class Mongodb < ClusterManagement::Service
       box.bash 'mongo --version', /MongoDB/
       box[data_path].dir?.must_be.true
     end
+    self
   end
   
   def dump_to path
@@ -46,6 +47,7 @@ class Mongodb < ClusterManagement::Service
       raise "unknown error, dump hasn't been copied to backup storage (#{path} is empty)!" unless path.to_dir.exist?
     end
     logger.info "MongoDB has been dumped to #{path}"    
+    self
   end
   
   def restore_from path
@@ -66,22 +68,25 @@ class Mongodb < ClusterManagement::Service
       box.bash("mongodb restore #{tmp_dump.path}", /MongoDB has been restored/)
     end
     logger.info "MongoDB has been restored from #{path}"    
+    self
   end
   
   def start
-    logger.info 'starting MongoDB'
+    logger.info "starting MongoDB on #{box}"
     box.bash 'mongodb start'
     sleep 1
+    self
   end
   
   def stop
-    logger.info 'stopping MongoDB'
+    logger.info "stopping MongoDB on #{box}"
     box.bash 'mongodb stop' rescue
     sleep 1
+    self
   end
     
   def started?
-    box.bash('ps -A') =~ /\smongod\s/
+    !!(box.bash('ps -A') =~ /\smongod\s/)
   end
   
   # def exec cmd
