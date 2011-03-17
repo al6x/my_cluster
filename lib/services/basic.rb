@@ -1,16 +1,17 @@
 class Basic < ClusterManagement::Service
+  tag :basic
+  
   def install
-    apply_once :install do
-      require(
-        Services::Os => :install,        
-        Services::Ruby => :install,
-        Services::Git => :install,
-        Services::Security => :install,
-        Services::ManualManagement => :install,
-        Services::FakeGem => :install,
-        Services::CustomRuby => :install,
-      )
+    services do
+      os.install
+      ruby.install      
+      git.install
+      security.install
+      manual_management.install
+      fake_gem.install
+      custom_ruby.install
     end
+    
     self
   end
 end

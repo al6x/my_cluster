@@ -1,15 +1,15 @@
 class RadExt < ClusterManagement::Project
+  tag 'app'
+  
   project_options(
-    require: [
-      Services::Basic,
-      Services::Thin,
-      
-      Projects::RadCore
+    requires: [
+      :basic, :thin,
+      :rad_core
     ],
     name: 'rad_ext'
   )
   
-  def install_apply_once
+  def install_apply_once box
     text = <<-BASH
   
 # rad
@@ -23,7 +23,7 @@ function rad(){
     end    
   end
   
-  def install_verify
+  def install_verify box
     box.bash 'rad -v', /Rad/
   end
 end

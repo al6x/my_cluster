@@ -1,9 +1,14 @@
 class CustomRuby < ClusterManagement::Service
+  tag :basic
+  
   def install
-    apply_once :install do
-      require Services::Ruby => :install, Services::FakeGem => :install
-      
-      logger.info "installing CustomRuby to #{box}"
+    services do
+      ruby.install
+      fake_gem.install
+    end
+    
+    apply_once :install do |box|
+      logger.info "installing :#{service_name} to #{box}"
       
       logger.info "  fake_gem env"
       unless box.env_file.content =~ /FAKE_GEM_PATH/

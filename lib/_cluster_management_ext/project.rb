@@ -1,10 +1,12 @@
 module ClusterManagement
   class Project < Service
     def install
-      apply_once :install do
-        require project_options[:require], :install
+      apply_once :install do |box|
+        (project_options[:requires] || []).each do |service_name| 
+          services[service_name].respond_to(:install)
+        end
       
-        logger.info "installing #{self.class} to #{box}"
+        logger.info "installing :#{service_name} to #{box}"
       
         projects = box[config.projects_path!]
         project = projects[project_options[:name]]
@@ -28,26 +30,32 @@ module ClusterManagement
           project.bash 'rake', /0 failures/
         end
         
-        respond_to :install_apply_once
+        respond_to :install_apply_once, box
 
         # verifying
         project.dir.must.exist
-        respond_to :install_verify
+        respond_to :install_verify, box
       end
       self
     end
         
-    def update
-      require project_options[:require], :install
-      require project_options[:require], :update
+    def update     
+      install
+      (project_options[:requires] || []).each do |service_name| 
+        services[service_name].respond_to(:install).respond_to(:update)
+      end
     
-      logger.info "updating #{self.class} on #{box}"
+      boxes do |box|
+        logger.info "updating :#{service_name} on #{box}"
       
-      project = box[config.projects_path!].dir project_options[:name]
-      raise "project #{project_options[:name]} not exist ('#{project}' not exist)!" unless project.exist?
-      project.bash "git reset HEAD --hard && git pull"
+        project = box[config.projects_path!].dir project_options[:name]
+        raise "project #{project_options[:name]} not exist ('#{project}' not exist)!" unless project.exist?
+        project.bash "git reset HEAD --hard && git pull"
+      end
+      
       self
     end    
+    cache_method :update
     
     
     # 

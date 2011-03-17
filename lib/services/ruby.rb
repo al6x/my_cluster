@@ -1,9 +1,11 @@
 class Ruby < ClusterManagement::Service
+  tag :basic
+  
   def install
-    apply_once :install do
-      require Services::SystemTools => :install
-      
-      logger.info "installing Ruby to #{box}"
+    services.system_tools.install
+    
+    apply_once :install do |box|            
+      logger.info "installing :#{service_name} to #{box}"
       
       installation_dir = '/usr/local/ruby'
       ruby_name = "ruby-1.9.2-p136"

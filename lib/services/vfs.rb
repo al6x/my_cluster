@@ -1,8 +1,8 @@
 class Vfs < ClusterManagement::Project
+  tag 'app'
+  
   project_options(
-    require: [
-      Services::Basic
-    ],
+    requires: [:basic],
     name: 'vfs'
   )
 end

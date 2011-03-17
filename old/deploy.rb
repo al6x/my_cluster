@@ -1,7 +1,7 @@
 require 'ruby_ext'
 
 set :stages, %w(production)
-set :default_stage, "production"
+set :default_stage, :production
 
 require 'capistrano/ext/multistage'
 
@@ -59,7 +59,7 @@ namespace :deploy do
     # run "cd #{release_path}/vendor/plugins && rm -r annotate_models"
   end
     
-  task :restart, roles: :app, except: { :no_release => true } do
+  task :restart, roles: :app, except: {no_release: true} do
     run "touch #{current_path}/tmp/restart.txt"
   end
   

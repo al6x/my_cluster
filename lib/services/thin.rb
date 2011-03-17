@@ -1,54 +1,73 @@
 class Thin < ClusterManagement::Service
+  tag :app
+  
   DEFAULT_OPTIONS = {
     '-p' => 4000,
     '-s' => 3
   }
   
   def install
-    apply_once :install do
-      require Services::Basic => :install
+    services.basic.install
+    
+    apply_once :install do |box|
+      logger.info "installing :#{service_name} to #{box}"
       
-      logger.info "installing Thin to #{box}"
-      
-      box.bash 'gem install thin'
+      box.bash 'gem install thin -v 1.2.7'
       
       box.bash 'thin -v', /thin/
     end
   end
   
-  def configure path, options
+  def configure path
     self.path = path
-    self.options = DEFAULT_OPTIONS.merge options
     self
   end
   
   def stop
-    logger.info "stopping Thin on #{box}"
-    box[path].bash "thin stop #{nginx_options}", /Stopping server/    
-    sleep 1
+    boxes do |box|
+      logger.info "stopping :#{service_name} on #{box}"
+      out = box[path].bash "thin stop #{nginx_options}", /Stopping server/    
+      sleep 1
+      if started?
+        logger.error out
+        raise "can't stop Thin!"       
+      end      
+    end
     self
   end
   
   def start
-    logger.info "starting Thin on #{box}"
-    box[path].bash "thin start #{nginx_options}", /Starting server/
-    sleep 1
+    boxes do |box|
+      logger.info "starting :#{service_name} on #{box}"
+      cmd = "thin start #{nginx_options}"
+      out = box[path].bash cmd, /Starting server/
+      sleep 2
+      unless started?        
+        logger.error out
+        logger.info "command: #{cmd}"
+        raise "can't start Thin!"       
+      end
+    end
     self
   end
   
   def started?
-    !!(box.bash('ps -A') =~ /\sthin\s/)
-  end
+    boxes.all?{|box| !!(box.bash('ps -A') =~ /\sthin\s/)}
+  end  
   
-  protected
+  protected    
+    def options
+      DEFAULT_OPTIONS.merge config.thin!.to_h(to_s: true)
+    end
+  
     def nginx_options
       options.to_a.collect{|k, v| "#{k} #{v}"}.join(' ')
     end
   
-    attr_writer :options
-    def options
-      @options || raise(":options not defined (use :configure)!")
-    end
+    # attr_writer :options
+    # def options
+    #   @options || raise(":options not defined (use :configure)!")
+    # end
     
     attr_writer :path
     def path

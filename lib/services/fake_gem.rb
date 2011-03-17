@@ -1,9 +1,11 @@
 class FakeGem < ClusterManagement::Service
+  tag :basic
+  
   def install
-    apply_once :install do
-      require Services::Ruby => :install
-      
-      logger.info "installing FakeGem to #{box}"
+    services.ruby.install
+    
+    apply_once :install do |box|
+      logger.info "installing :#{service_name} to #{box}"
       
       box["#{config.projects_path!}/fake_gem"].destroy
       fg_git = "git://github.com/alexeypetrushin/fake_gem.git"
@@ -11,6 +13,6 @@ class FakeGem < ClusterManagement::Service
 
       box["#{config.projects_path!}/fake_gem/lib/fake_gem.rb"].must.exist
     end
-  end
-  self
+    self
+  end  
 end

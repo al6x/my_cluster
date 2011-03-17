@@ -1,21 +1,40 @@
-# Load paths
-my_cluster_path = File.dirname __FILE__
-$LOAD_PATH << "#{my_cluster_path}/lib" unless $LOAD_PATH.include? "#{my_cluster_path}/lib"
+require 'rake_ext'
+delete_task :default
 
-require 'my_cluster/support'
+require '_my_cluster/require'
 
-task :default do
-  dir = __FILE__.dirname
-  # puts "#{dir}/lib/services/nginx/nginx.fire_net.conf".to_file.render(value: 10)
-  # boxes[:db].projects.rad_core.update
-  boxes[:db].services.nginx.install.restart
-  
-end
+# task :default do
+  # dir = __FILE__.dirname
+  # # puts "#{dir}/lib/services/nginx/nginx.fire_net.conf".to_file.render(value: 10)
+  # # boxes[:db].projects.rad_core.update
+  # boxes[:db].services.nginx.install.restart
+  # boxes[:db].services.basic.install
+
+  # cluster.services.basic.install
+# end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 task :deploy do
-  boxes[:app].each do |box|
-    box.projects.fire_net.deploy
-  end
+  cluster.services.fire_net.deploy
+  
+  # boxes[:app].each do |box|
+  #   box.projects.fire_net.deploy
+  # end
 end
 
 task :install do

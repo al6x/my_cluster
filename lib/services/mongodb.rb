@@ -1,11 +1,12 @@
 class Mongodb < ClusterManagement::Service
-  version 2
+  tag :db
+  version 2  
   
   def install
-    apply_once :install do
-      require Services::Basic => :install
-      
-      logger.info "installing MongoDB to #{box}"            
+    services.basic.install
+    
+    apply_once :install do |box|
+      logger.info "installing :#{service_name} to #{box}"            
       
       box.bash 'packager install mongodb'      
       box[data_path].create
@@ -28,12 +29,12 @@ class Mongodb < ClusterManagement::Service
     raise "backup path #{path} already exist!" if path.to_entry.exist?
     must_be_running
     
-    logger.info "dumping MongoDB to #{path}"    
-    box.tmp do |tmp|            
+    logger.info "dumping :#{service_name} to #{path}"    
+    single_box.tmp do |tmp|            
       tmp_dump = tmp / 'mongodb_dump'
       
       logger.info "  dumping database to tmp file"
-      out = box.bash("mongodb dump --out #{tmp_dump.path}")      
+      out = single_box.bash("mongodb dump --out #{tmp_dump.path}")      
       unless out =~ /accounts_production.*to/ and out =~ /global_production.*to/
         puts out
         raise "erorr during MongoDB dump!"
@@ -46,7 +47,7 @@ class Mongodb < ClusterManagement::Service
       
       raise "unknown error, dump hasn't been copied to backup storage (#{path} is empty)!" unless path.to_dir.exist?
     end
-    logger.info "MongoDB has been dumped to #{path}"    
+    logger.info ":#{service_name} has been dumped to #{path}"    
     self
   end
   
@@ -54,8 +55,8 @@ class Mongodb < ClusterManagement::Service
     raise "backup path #{path} not exist!" unless path.to_entry.exist?
     must_be_running
     
-    logger.info "restoring MongoDB from #{path}"    
-    box.tmp do |tmp|
+    logger.info "restoring :#{service_name} from #{path}"    
+    single_box.tmp do |tmp|
       tmp_dump = tmp / 'mongodb_dump'
       
       logger.info "  copying dump to tmp file"
@@ -64,33 +65,33 @@ class Mongodb < ClusterManagement::Service
 
       raise "unknown error, tmp backup file #{tmp_dump.path} hasn't been created!" unless tmp_dump.exist?
       
-      logger.info "  restoring MongoDB"
-      box.bash("mongodb restore #{tmp_dump.path}", /MongoDB has been restored/)
+      logger.info "  restoring :#{service_name}"
+      single_box.bash("mongodb restore #{tmp_dump.path}", /MongoDB has been restored/)
     end
-    logger.info "MongoDB has been restored from #{path}"    
+    logger.info ":#{service_name} has been restored from #{path}"    
     self
   end
   
   def start
-    logger.info "starting MongoDB on #{box}"
-    box.bash 'mongodb start'
+    logger.info "starting :#{service_name} on #{single_box}"
+    single_box.bash 'mongodb start'
     sleep 1
     self
   end
   
   def stop
-    logger.info "stopping MongoDB on #{box}"
-    box.bash 'mongodb stop' rescue
+    logger.info "stopping :#{service_name} on #{single_box}"
+    single_box.bash 'mongodb stop' rescue
     sleep 1
     self
   end
     
   def started?
-    !!(box.bash('ps -A') =~ /\smongod\s/)
+    !!(single_box.bash('ps -A') =~ /\smongod\s/)
   end
   
   # def exec cmd
-  #   box.bash("mongodb shell --eval ")
+  #   single_box.bash("mongodb shell --eval ")
   # end
   
   def data_path

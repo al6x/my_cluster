@@ -1,11 +1,12 @@
 class Nginx < ClusterManagement::Service
-  version 11
+  tag :router
+  version 13
   
   def install
-    apply_once :install do
-      require Services::Basic => :install
-      
-      logger.info "installing Nginx to #{box}"
+    services.basic.install
+    
+    apply_once :install do |box|
+      logger.info "installing :#{service_name} to #{box}"
       
       box.bash 'packager install nginx'
       "#{__FILE__.dirname}/nginx.sh".to_file.append_to_environment_of box
@@ -25,19 +26,19 @@ class Nginx < ClusterManagement::Service
   end
   
   def started?
-    !!(box.bash('ps -A') =~ /\snginx\s/)
+    !!(single_box.bash('ps -A') =~ /\snginx\s/)
   end
   
   def start
-    logger.info "starting NginX on #{box}"
-    box.bash 'nginx start'
+    logger.info "starting :#{service_name} on #{single_box}"
+    single_box.bash 'nginx start'
     sleep 1
     self
   end
   
   def stop
-    logger.info "stopping NginX on #{box}"
-    box.bash 'nginx stop'
+    logger.info "stopping :#{service_name} on #{single_box}"
+    single_box.bash 'nginx stop'
     sleep 1
     self
   end  

@@ -1,8 +1,8 @@
 class Micon < ClusterManagement::Project
+  tag 'app'
+  
   project_options(
-    require: [
-      Services::Basic
-    ],
+    requires: [:basic],
     name: 'micon'
   )
 end
