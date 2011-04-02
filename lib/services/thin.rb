@@ -25,8 +25,9 @@ class Thin < ClusterManagement::Service
   
   def stop
     boxes do |box|
-      logger.info "stopping :#{service_name} on #{box}"
-      out = box[path].bash "thin stop #{nginx_options}", /Stopping server/    
+      cmd = "thin stop #{thin_options}"
+      logger.info "stopping :#{service_name} on #{box} (#{cmd})"
+      out = box[path].bash cmd, /Stopping server/    
       sleep 1
       if started?
         logger.error out
@@ -39,7 +40,7 @@ class Thin < ClusterManagement::Service
   def start
     boxes do |box|
       logger.info "starting :#{service_name} on #{box}"
-      cmd = "thin start #{nginx_options}"
+      cmd = "thin start #{thin_options}"
       out = box[path].bash cmd, /Starting server/
       sleep 2
       unless started?        
@@ -60,7 +61,7 @@ class Thin < ClusterManagement::Service
       DEFAULT_OPTIONS.merge config.thin!.to_h(to_s: true)
     end
   
-    def nginx_options
+    def thin_options
       options.to_a.collect{|k, v| "#{k} #{v}"}.join(' ')
     end
   
