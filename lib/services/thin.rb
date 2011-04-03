@@ -39,8 +39,8 @@ class Thin < ClusterManagement::Service
   
   def start
     boxes do |box|
-      logger.info "starting :#{service_name} on #{box}"
       cmd = "thin start #{thin_options}"
+      logger.info "starting :#{service_name} on #{box} (#{cmd})"      
       out = box[path].bash cmd, /Starting server/
       sleep 2
       unless started?        
