@@ -26,7 +26,7 @@ class SystemTools < ClusterManagement::Service
         htop
         libxml2-dev
         libxslt-dev
-        libyaml
+        libyaml-dev
       )
       box.bash "packager install #{tools.join(' ')}"
     end
