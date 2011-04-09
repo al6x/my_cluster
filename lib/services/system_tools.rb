@@ -1,5 +1,6 @@
 class SystemTools < ClusterManagement::Service
   tag :basic
+  version 2
   
   def install
     services.os.install
@@ -25,6 +26,7 @@ class SystemTools < ClusterManagement::Service
         htop
         libxml2-dev
         libxslt-dev
+        libyaml
       )
       box.bash "packager install #{tools.join(' ')}"
     end
