@@ -27,7 +27,7 @@ class Thin < ClusterManagement::Service
     boxes do |box|
       cmd = "thin stop #{thin_options}"
       logger.info "stopping :#{service_name} on #{box}"
-      out = box[path].bash cmd, /Stopping server/    
+      out = box[path].bash cmd #, /Stopping server/    
       sleep 1
       if started?
         logger.error out
