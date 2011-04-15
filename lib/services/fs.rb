@@ -16,6 +16,12 @@ class Fs < ClusterManagement::Service
   
   def dump_to path
     logger.info "dumping :#{service_name} to #{path}"    
+    
+    # TODO 3
+    # hack, somehow there's a recursive /data/fs/fs link to itself (/data/fs) I don't know who creates it, don't have time to investigate
+    # right now just deleting it.
+    single_box.dir[data_path]['fs'].destroy
+    
     # box[data_path].rsync_to path.to_dir can't use rsync hands if used with ssh, known bug
     single_box.dir[data_path].copy_to path.to_dir
     raise "unknown error, files hasn't been copied to backup storage (#{path} is empty)!" unless path.to_dir.exist?
