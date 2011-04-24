@@ -17,7 +17,7 @@ class Mongodb < ClusterManagement::Service
         script.append_to_environment_of box
       end
       
-      box[data_path].create
+      # box[data_path].create
 
       box.bash 'mongo --version', /MongoDB/
       box[data_path].dir?.must_be.true

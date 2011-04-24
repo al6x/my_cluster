@@ -1,5 +1,6 @@
 class Mail < ClusterManagement::Service
   tag :basic
+  version 2
   
   def install
     services.system_tools.install
@@ -7,7 +8,7 @@ class Mail < ClusterManagement::Service
     apply_once :install do |box|
       logger.info "installing :#{service_name} to #{box}"
       
-      # box.bash 'packager install sendmail', /Starting Mail Transport Agent (MTA) sendmail.*done/
+      box.bash 'packager install sendmail', /done/
     end
     self
   end

@@ -1,6 +1,6 @@
 class SystemTools < ClusterManagement::Service
   tag :basic
-  version 2
+  version 3
   
   def install
     services.os.install

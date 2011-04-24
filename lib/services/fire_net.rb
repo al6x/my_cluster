@@ -15,6 +15,7 @@ class FireNet < ClusterManagement::Project
   def deploy
     update
     services.nginx.started    
+    services.mongodb.started
     
     boxes do |box|
       logger.info "deploying :#{service_name} to #{box}"
