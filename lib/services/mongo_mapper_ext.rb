@@ -14,8 +14,8 @@ class MongoMapperExt < ClusterManagement::Project
     super
   end
   
-  def install
-    services do
+  def install    
+    services do      
       basic.install      
       mongodb.install.started
     end

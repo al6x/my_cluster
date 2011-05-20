@@ -27,6 +27,8 @@ class SystemTools < ClusterManagement::Service
         libxml2-dev
         libxslt-dev
         libyaml-dev
+                
+        imagemagick
       )
       box.bash "packager install #{tools.join(' ')}"
     end

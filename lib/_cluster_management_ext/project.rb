@@ -1,4 +1,4 @@
-class ClusterManagement::Project < Service
+class ClusterManagement::Project < ClusterManagement::Service
   def install
     apply_once :install do |box|
       (project_options[:requires] || []).each do |service_name| 
