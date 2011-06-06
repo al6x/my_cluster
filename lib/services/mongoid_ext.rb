@@ -1,8 +1,8 @@
-class MongoMapperExt < ClusterManagement::Project
+class MongoidExt < ClusterManagement::Project
   tag 'app'
   
   project_options(
-    name: 'mongo_mapper_ext'
+    name: 'mongoid_ext'
   )
   
   def update

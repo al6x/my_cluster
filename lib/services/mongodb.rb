@@ -1,6 +1,6 @@
 class Mongodb < ClusterManagement::Service
   tag :db
-  version 2  
+  version 3
   
   def install
     services.basic.install
@@ -8,7 +8,17 @@ class Mongodb < ClusterManagement::Service
     apply_once :install do |box|
       logger.info "installing :#{service_name} to #{box}"            
       
-      box.bash 'packager install mongodb'      
+      # updating source list
+      sources_list = box.file('/etc/apt/sources.list')
+      new_source = "\ndeb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen"
+      sources_list.append new_source unless sources_list.content.include? new_source
+      box.bash 'sudo apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10'
+      
+      # installing mongodb
+      # box.bash 'packager install mongodb'
+      box.bash 'sudo apt-get update'
+      box.bash 'sudo apt-get install mongodb-10gen'
+      
       box[data_path].create
 
       box.tmp do |tmp|
