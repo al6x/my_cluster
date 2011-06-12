@@ -4,7 +4,7 @@ class FireNet < ClusterManagement::Project
   project_options(
     requires: [
       :basic, :fs, :thin,      
-      :rad_users, :rad_bag, :rad_saas
+      :rad_users, :rad_bag, :rad_store, :rad_saas
     ],
     name: '4ire.net',
     git: 'git@github.com:alexeypetrushin/4ire.net.git',
