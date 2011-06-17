@@ -4,7 +4,7 @@ class RadExt < ClusterManagement::Project
   project_options(
     requires: [
       :basic, :thin,
-      :rad_core
+      :rad_core, :rad_assets
     ],
     name: 'rad_ext'
   )

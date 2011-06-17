@@ -30,6 +30,9 @@ class FireNet < ClusterManagement::Project
         
       logger.info "  symlinks"
       runtime['public/fs'].symlink_to! box[Services::Fs.data_path]
+      
+      logger.info "  copying assets"
+      runtime.bash "rake assets:copy_to_public m=production"
     
       logger.info "  restarting thin"
 

@@ -4,7 +4,7 @@ class RadCommonInterface < ClusterManagement::Project
   project_options(
     requires: [
       :basic,
-      :rad_abstract_interface, :rad_js, :rad_asset_packager
+      :rad_abstract_interface, :rad_js
     ],
     name: 'rad_common_interface'
   )
