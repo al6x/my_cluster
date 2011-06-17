@@ -1,6 +1,6 @@
 class Nginx < ClusterManagement::Service
   tag :router
-  version 22
+  version 24
   
   def install
     services.basic.install
@@ -28,10 +28,14 @@ class Nginx < ClusterManagement::Service
   end
   
   def started?
+    install
+    
     !!(single_box.bash('ps -A') =~ /\snginx\s/)
   end
   
   def start
+    install
+    
     logger.info "starting :#{service_name} on #{single_box}"
     single_box.bash 'nginx start'
     sleep 1
@@ -39,6 +43,8 @@ class Nginx < ClusterManagement::Service
   end
   
   def stop
+    install
+    
     logger.info "stopping :#{service_name} on #{single_box}"
     single_box.bash 'nginx stop'
     sleep 1
