@@ -1,8 +1,8 @@
-class MongoidExt < ClusterManagement::Project
+class MongoidMisc < ClusterManagement::Project
   tag 'app'
   
   project_options(
-    name: 'mongoid_ext'
+    name: 'mongoid_misc'
   )
   
   def update
