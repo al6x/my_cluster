@@ -26,5 +26,5 @@ require '_cluster_management_ext/project'
 #
 # Configuring
 #
-runtime_dir = "#{__FILE__}/../../..".to_dir.to_s
-cluster.configure runtime_dir
+runtime_path = "#{__FILE__}/../../..".to_dir.to_s
+cluster.configure runtime_path
