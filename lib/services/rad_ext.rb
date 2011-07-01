@@ -1,5 +1,5 @@
 class RadExt < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   project_options(
     requires: [
@@ -14,7 +14,7 @@ class RadExt < ClusterManagement::Project
   
 # rad
 function rad(){
-#{config.projects_path!}/rad_ext/bin/rad $*
+#{config.projects_path}/rad_ext/bin/rad $*
 }
     BASH
     unless box.env_file.content.include? text

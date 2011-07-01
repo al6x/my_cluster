@@ -1,5 +1,5 @@
 class MongoidMisc < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   project_options(
     name: 'mongoid_misc'

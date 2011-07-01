@@ -1,5 +1,5 @@
 class RadCommonInterface < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   project_options(
     requires: [

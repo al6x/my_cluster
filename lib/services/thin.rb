@@ -24,7 +24,7 @@ class Thin < ClusterManagement::Service
   end
   
   def stop
-    boxes do |box|
+    boxes.each do |box|
       cmd = "thin stop #{thin_options}"
       logger.info "stopping :#{service_name} on #{box}"
       out = box[path].bash cmd #, /Stopping server/    
@@ -38,7 +38,7 @@ class Thin < ClusterManagement::Service
   end
   
   def start
-    boxes do |box|
+    boxes.each do |box|
       cmd = "thin start #{thin_options}"
       logger.info "starting :#{service_name} on #{box}"      
       out = box[path].bash cmd, /Starting server/
@@ -58,7 +58,7 @@ class Thin < ClusterManagement::Service
   
   protected    
     def options
-      DEFAULT_OPTIONS.merge config.thin!.to_h(to_s: true)
+      DEFAULT_OPTIONS.merge config.thin
     end
   
     def thin_options

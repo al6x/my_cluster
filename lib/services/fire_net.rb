@@ -1,5 +1,5 @@
 class FireNet < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   project_options(
     requires: [
@@ -12,15 +12,15 @@ class FireNet < ClusterManagement::Project
     skip_spec: true
   )
   
-  def deploy
+  def deploy    
     update
     services.nginx.started    
     services.mongodb.started
-    
-    boxes do |box|
+
+    boxes.each do |box|      
       logger.info "deploying :#{service_name} to #{box}"
     
-      project = box[config.projects_path!].dir project_options[:name]
+      project = box[config.projects_path].dir project_options[:name]
       runtime = project / :runtime
     
       logger.info "  configuring"

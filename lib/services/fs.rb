@@ -20,10 +20,10 @@ class Fs < ClusterManagement::Service
     # TODO 3
     # hack, somehow there's a recursive /data/fs/fs link to itself (/data/fs) I don't know who creates it, don't have time to investigate
     # right now just deleting it.
-    single_box.dir[data_path]['fs'].destroy
+    box.dir[data_path]['fs'].destroy
     
     # box[data_path].rsync_to path.to_dir can't use rsync hands if used with ssh, known bug
-    single_box.dir[data_path].copy_to path.to_dir
+    box.dir[data_path].copy_to path.to_dir
     raise "unknown error, files hasn't been copied to backup storage (#{path} is empty)!" unless path.to_dir.exist?
     logger.info ":#{service_name} has been dumped to #{path}"
     self
@@ -31,7 +31,7 @@ class Fs < ClusterManagement::Service
   
   def restore_from path
     raise "backup path #{path} not exist!" unless path.to_entry.exist?
-    fs = single_box[data_path]
+    fs = box[data_path]
     raise "Fs '#{data_path}' is not empty (clear it manually before restore)!" unless fs.empty?
 
     logger.info "restoring :#{service_name} from #{path}"    
@@ -44,7 +44,7 @@ class Fs < ClusterManagement::Service
   end
   
   def self.data_path
-    "#{cluster.config.data_path!}/fs"
+    "#{cluster.config.data_path}/fs"
   end
   def data_path; self.class.data_path end
 end

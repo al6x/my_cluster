@@ -17,8 +17,6 @@ autoload_dir "#{root_path}/lib"
 # 
 # Libraries
 # 
-require '_my_cluster/support'
-
 require '_cluster_management_ext/service'
 require '_cluster_management_ext/project'
 
@@ -26,5 +24,9 @@ require '_cluster_management_ext/project'
 #
 # Configuring
 #
+ClusterManagement::Config.class_eval do
+  require_attr :projects_path, :data_path, :nginx, :thin
+end
+
 runtime_path = "#{__FILE__}/../../..".to_dir.to_s
-cluster.configure runtime_path
+cluster.config.load_config! runtime_path

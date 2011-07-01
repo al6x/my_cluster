@@ -1,5 +1,5 @@
 class RadThemes < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   project_options(
     requires: [:rad_common_interface],

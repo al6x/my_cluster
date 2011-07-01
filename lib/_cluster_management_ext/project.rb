@@ -7,7 +7,7 @@ class ClusterManagement::Project < ClusterManagement::Service
     
       logger.info "installing :#{service_name} to #{box}"
     
-      projects = box[config.projects_path!]
+      projects = box[config.projects_path]
       project = projects[project_options[:name]]
     
       logger.info "  clonning git"
@@ -39,15 +39,15 @@ class ClusterManagement::Project < ClusterManagement::Service
   end
       
   def update     
-    install
-    (project_options[:requires] || []).each do |service_name| 
+    install    
+    (project_options[:requires] || []).each do |service_name|
       services[service_name].respond_to(:install).respond_to(:update)
     end
-  
-    boxes do |box|
+      
+    boxes.each do |box|
       logger.info "updating :#{service_name} on #{box}"
     
-      project = box[config.projects_path!].dir project_options[:name]
+      project = box[config.projects_path].dir project_options[:name]
       raise "project #{project_options[:name]} not exist ('#{project}' not exist)!" unless project.exist?
       project.bash "git reset HEAD --hard && git pull"
     end

@@ -1,5 +1,5 @@
 class Vfs < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   project_options(
     requires: [:basic],

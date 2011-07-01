@@ -19,20 +19,20 @@ class MySql < ClusterManagement::Service
   end
     
   def start
-    logger.info "starting :#{service_name} on #{single_box}"
-    single_box.bash 'mysql start'
+    logger.info "starting :#{service_name} on #{box}"
+    box.bash 'mysql start'
     sleep 1
     self
   end
   
   def stop
-    logger.info "stopping :#{service_name} on #{single_box}"
-    single_box.bash 'mysql stop' rescue
+    logger.info "stopping :#{service_name} on #{box}"
+    box.bash 'mysql stop' rescue
     sleep 7
     self
   end
     
   def started?
-    !!(single_box.bash('mysql status') =~ /running/)
+    !!(box.bash('mysql status') =~ /running/)
   end
 end

@@ -40,11 +40,11 @@ class Mongodb < ClusterManagement::Service
     must_be_running
     
     logger.info "dumping :#{service_name} to #{path}"    
-    single_box.tmp do |tmp|            
+    box.tmp do |tmp|            
       tmp_dump = tmp / 'mongodb_dump'
       
       logger.info "  dumping database to tmp file"
-      out = single_box.bash("mongodb dump --out #{tmp_dump.path}")      
+      out = box.bash("mongodb dump --out #{tmp_dump.path}")      
       unless out =~ /accounts_production.*to/ and out =~ /global_production.*to/
         puts out
         raise "erorr during MongoDB dump!"
@@ -66,7 +66,7 @@ class Mongodb < ClusterManagement::Service
     must_be_running
     
     logger.info "restoring :#{service_name} from #{path}"    
-    single_box.tmp do |tmp|
+    box.tmp do |tmp|
       tmp_dump = tmp / 'mongodb_dump'
       
       logger.info "  copying dump to tmp file"
@@ -76,32 +76,32 @@ class Mongodb < ClusterManagement::Service
       raise "unknown error, tmp backup file #{tmp_dump.path} hasn't been created!" unless tmp_dump.exist?
       
       logger.info "  restoring :#{service_name}"
-      single_box.bash("mongodb restore #{tmp_dump.path}", /MongoDB has been restored/)
+      box.bash("mongodb restore #{tmp_dump.path}", /MongoDB has been restored/)
     end
     logger.info ":#{service_name} has been restored from #{path}"    
     self
   end
   
   def start
-    logger.info "starting :#{service_name} on #{single_box}"
-    single_box.bash 'mongodb start'
+    logger.info "starting :#{service_name} on #{box}"
+    box.bash 'mongodb start'
     sleep 1
     self
   end
   
   def stop
-    logger.info "stopping :#{service_name} on #{single_box}"
-    single_box.bash 'mongodb stop' rescue
+    logger.info "stopping :#{service_name} on #{box}"
+    box.bash 'mongodb stop' rescue
     sleep 1
     self
   end
     
   def started?
-    !!(single_box.bash('ps -A') =~ /\smongod\s/)
+    !!(box.bash('ps -A') =~ /\smongod\s/)
   end
   
   # def exec cmd
-  #   single_box.bash("mongodb shell --eval ")
+  #   box.bash("mongodb shell --eval ")
   # end
   
   def data_path

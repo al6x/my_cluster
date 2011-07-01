@@ -1,5 +1,5 @@
 class RubyExt < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   version 2
   project_options(

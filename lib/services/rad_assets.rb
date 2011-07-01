@@ -1,5 +1,5 @@
 class RadAssets < ClusterManagement::Project
-  tag 'app'
+  tag :app
   
   project_options(
     requires: [:basic, :rad_core],
