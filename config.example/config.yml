@@ -1,3 +1,6 @@
-:ssh:
-  :user: some_username
-  :password: some_password
+handy_scheme:
+  'app.com': ['basic', 'router', 'db', 'app']
+
+thin:
+  '-s': 1
+  '-p': 3000

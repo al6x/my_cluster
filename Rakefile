@@ -21,14 +21,6 @@ task :install do
   end
 end
 
-task :install_analytics do  
-  cluster.services.nginx.install
-  cluster.services.nginx.restart
-  # cluster.services do
-  #   
-  # end
-end
-
 desc "backup database and files"
 task :backup do
   backup_dir = cluster.config.backup_path!.to_dir[Time.now.to_date.to_s]
