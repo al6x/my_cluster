@@ -4,7 +4,7 @@ class RadKit < ClusterManagement::Project
   project_options(
     requires: [
       :basic, :mail,
-      :rad_core, :rad_ext, :rad_common_interface, :mongoid_misc, :rad_saas
+      :rad_core, :rad_common_interface, :mongoid_misc, :rad_saas
     ],
     name: 'rad_kit'
   )
