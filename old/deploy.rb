@@ -38,7 +38,7 @@ namespace :deploy do
     run "ln -s #{release_path}/vendor/plugins/common_interface/public/common_interface #{release_path}/public/common_interface"
     
     # rails-ext symlink
-    run %{ruby -e "require 'rubygems'; require 'rails_ext/micelaneous/create_public_symlinks'; RailsExt.create_public_symlinks!('#{release_path}')"}
+    run %{ruby -e "require 'rubygems'; require 'rails_ext/miscellaneous/create_public_symlinks'; RailsExt.create_public_symlinks!('#{release_path}')"}
     
     # config
     %w{database.yml setting.yml sunspot.yml}.each do |file|
