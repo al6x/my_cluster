@@ -25,7 +25,7 @@ require '_cluster_management_ext/project'
 # Configuring
 #
 ClusterManagement::Config.class_eval do
-  require_attr :projects_path, :data_path, :nginx, :thin
+  attr_required :projects_path, :data_path, :nginx, :thin
 end
 
 runtime_path = "#{__FILE__}/../../..".to_dir.to_s
