@@ -23,7 +23,7 @@ end
 
 desc "backup database and files"
 task :backup do
-  backup_dir = cluster.config.backup_path!.to_dir[Time.now.to_date.to_s]
+  backup_dir = cluster.config.backup_path.to_dir[Time.now.to_date.to_s]
   raise "backup path #{backup_dir.path} already exist!" if backup_dir.exist?
   
   cluster.services.mongodb.dump_to backup_dir['db'].path
