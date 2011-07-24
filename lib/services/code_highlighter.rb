@@ -7,7 +7,7 @@ class CodeHighlighter < ClusterManagement::Service
     apply_once :install do |box|            
       logger.info "installing :#{service_name} to #{box}"
       
-      box.bash 'packager install easy_install'
+      box.bash 'packager install python-setuptools'
       box.bash 'easy_install Pygments'
       box.bash 'gem install albino'
       
@@ -16,6 +16,3 @@ class CodeHighlighter < ClusterManagement::Service
     self
   end
 end
-
-
-albino
