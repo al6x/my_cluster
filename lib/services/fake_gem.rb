@@ -1,5 +1,6 @@
 class FakeGem < ClusterManagement::Service
   tag :basic
+  version 2
   
   def install
     services.ruby.install
