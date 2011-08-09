@@ -1,5 +1,6 @@
 class Security < ClusterManagement::Service
   tag :basic
+  version 2
   
   def install
     services.os.install
@@ -11,7 +12,8 @@ class Security < ClusterManagement::Service
       ssh_config.copy_to! box['/etc/ssh/ssh_config'] if ssh_config.exist?
       # box.upload_file ssh_config, '/etc/ssh/ssh_config', override: true if File.exist? ssh_config
       
-      box.dir("~/.ssh").create
+      ssh_dir = box.dir("~/.ssh")
+      ssh_dir.create
       # box.create_directory "~/.ssh", silent: true
       {
         "#{config.config_path}/services/security/id_rsa".to_file => "~/.ssh/id_rsa",
@@ -21,6 +23,9 @@ class Security < ClusterManagement::Service
         from.copy_to! box[to] if from.exist?
       end
       box.bash "chmod -R go-rwx ~/.ssh"
+      
+      # adding github.com to known hosts
+      ssh_dir.bash "ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts"
     end
     self
   end

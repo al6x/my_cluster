@@ -1,6 +1,6 @@
 class Nginx < ClusterManagement::Service
   tag :router
-  version 24
+  version 29
   
   def install
     services.basic.install
@@ -16,13 +16,13 @@ class Nginx < ClusterManagement::Service
       configs_src.file('nginx.conf').copy_to! box['/etc/nginx/nginx.conf']
       
       nginx_config = config.nginx['fire_net']
-      nginx_config['static'] = "#{config.projects_path}/4ire.net/runtime/public"
-      %w(nginx.fire_net.conf).each do |fname|
-        data = configs_src[fname].render nginx_config
-        box["/etc/nginx/#{fname}"].write! data   
+      nginx_config[:static] = "#{config.projects_path}/4ire.net/runtime/public"
+      {'nginx.fire_net.conf.erb' => 'nginx.fire_net.conf'}.each do |template, fname|
+        data = configs_src[template].render nginx_config        
+        box["/etc/nginx/#{fname}"].write! data
       end
       
-      box.bash 'nginx configtest', /successful/
+      box.bash 'nginx configtest', /^Testing nginx configuration: nginx.$/
     end
     self
   end

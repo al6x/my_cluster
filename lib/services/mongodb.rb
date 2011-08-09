@@ -22,7 +22,7 @@ class Mongodb < ClusterManagement::Service
       box[data_path].create
 
       box.tmp do |tmp|
-        template = "#{__FILE__.dirname}/mongodb.sh".to_file
+        template = "#{__FILE__.dirname}/mongodb.sh.erb".to_file
         script = tmp[template.name].write template.render(data_path: data_path)
         script.append_to_environment_of box
       end
@@ -84,7 +84,7 @@ class Mongodb < ClusterManagement::Service
   
   def start
     logger.info "starting :#{service_name} on #{box}"
-    box.bash 'mongodb start'
+    box.bash 'mongodb start '
     sleep 1
     self
   end

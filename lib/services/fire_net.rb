@@ -8,7 +8,7 @@ class FireNet < ClusterManagement::Project
     ],
     name: '4ire.net',
     git: 'git@github.com:alexeypetrushin/4ire.net.git',
-    skip_gems: true,
+    # skip_gems: true,
     skip_spec: true
   )
   

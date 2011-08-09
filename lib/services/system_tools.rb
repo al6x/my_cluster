@@ -31,6 +31,8 @@ class SystemTools < ClusterManagement::Service
         imagemagick
       )
       box.bash "packager install #{tools.join(' ')}"
+      
+      box[config.projects_path].create      
     end
     self
   end

@@ -5,7 +5,7 @@ class Os < ClusterManagement::Service
     apply_once :install do |box|
       logger.info "installing :#{service_name} to #{box}"
       
-      box.bash 'cat /etc/lsb-release', /DISTRIB_RELEASE=10.04/
+      box.bash 'cat /etc/lsb-release', /DISTRIB_RELEASE=10/
     end
     self
   end
