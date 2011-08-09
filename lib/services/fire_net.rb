@@ -35,7 +35,6 @@ class FireNet < ClusterManagement::Service
     
       logger.info "  installing fake gems"      
       FAKE_GEMS.merge(NAME => GIT).each do |name, git|
-        logger.info "    cloning #{name}"
         projects[name].destroy
         projects.bash "git clone #{git}"
       end
@@ -54,9 +53,9 @@ class FireNet < ClusterManagement::Service
     boxes.each do |box|
       logger.info "updating :#{service_name} on #{box}"
       
+      logger.info "  updating fake gems"
       projects = box[config.projects_path]
       FAKE_GEMS.merge(NAME => GIT).each do |name, git|
-        logger.info "    updating #{name}"
         fgem = projects[name]
         raise "project :#{name} not exist!" unless fgem.exist?
         fgem.bash "git reset HEAD --hard && git pull"

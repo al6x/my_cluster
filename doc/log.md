@@ -1,5 +1,84 @@
 rake deploy
 
+installing :os to 46.137.176.20
+installing :system_tools to 46.137.176.20
+installing :ruby to 46.137.176.20
+  building
+  configuring
+  updating environment
+installing :git to 46.137.176.20
+installing :security to 46.137.176.20
+installing :manual_management to 46.137.176.20
+installing :fake_gem to 46.137.176.20
+installing :custom_ruby to 46.137.176.20
+  fake_gem env
+  rspec
+installing :fs to 46.137.176.20
+installing :thin to 46.137.176.20
+installing :code_highlighter to 46.137.176.20
+installing :mail to 46.137.176.20
+installing :mongodb to 46.137.176.20
+installing :nginx to 46.137.176.20
+installing :fire_net to 46.137.176.20
+  installing fake gems
+  installing gems
+updating :fire_net on 46.137.176.20
+  updating fake gems
+  updating gems
+starting :nginx on 46.137.176.20
+deploying :fire_net to 46.137.176.20
+  configuring
+  symlinks
+  copying assets
+  restarting thin
+stopping :thin on 46.137.176.20
+starting :thin on 46.137.176.20
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 installing :os to my.amazonaws.com
 installing :system_tools to my.amazonaws.com
 installing :ruby to my.amazonaws.com
