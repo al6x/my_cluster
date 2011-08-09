@@ -1,7 +1,8 @@
 class FireNet < ClusterManagement::Service
   tag :app
+  version 2
   
-  DEPENDENCIES = [:basic, :fs, :thin, :code_highlighter, :mail]
+  DEPENDENCIES = [:basic, :fs, :thin, :code_highlighter, :mail, :mongodb, :nginx]
   FAKE_GEMS = {
     class_loader: 'git://github.com/alexeypetrushin/class_loader.git',
     micon: 'git://github.com/alexeypetrushin/micon.git',
@@ -14,23 +15,20 @@ class FireNet < ClusterManagement::Service
     rad_kit: 'git://github.com/alexeypetrushin/rad_kit.git',
     rad_themes: 'git://github.com/alexeypetrushin/rad_themes.git',
     rad_users: 'git://github.com/alexeypetrushin/rad_users.git',
-    ruby_ext: 'git://github.com/alexeypetrushin/ruby_ext.git',    
+    ruby_ext: 'git://github.com/alexeypetrushin/ruby_ext.git',
+    vfs: 'git://github.com/alexeypetrushin/vfs.git',
     
-    rad_bag: 'git@github.com:alexeypetrushin/rad_bag.git'
-    rad_saas: 'git@github.com:alexeypetrushin/rad_saas.git'
+    rad_bag: 'git@github.com:alexeypetrushin/rad_bag.git',
+    rad_saas: 'git@github.com:alexeypetrushin/rad_saas.git',
     rad_store: 'git@github.com:alexeypetrushin/rad_store.git'
   }
   NAME = '4ire.net'
   GIT = 'git@github.com:alexeypetrushin/4ire.net.git'
   
   def install
-    basic.install
-    mongodb.install
-    nginx.install
-    
     apply_once :install do |box|
-      DEPENDENCIES.each{|name| services[service_name].install}
-    
+      DEPENDENCIES.each{|name| services[name].install}
+      
       logger.info "installing :#{service_name} to #{box}"
       projects = box[config.projects_path]
       projects.create
@@ -74,8 +72,10 @@ class FireNet < ClusterManagement::Service
   
   def deploy    
     update
-    services.nginx.started    
-    services.mongodb.started
+    services do
+      nginx.started    
+      mongodb.started
+    end
 
     boxes.each do |box|      
       logger.info "deploying :#{service_name} to #{box}"

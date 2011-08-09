@@ -76,7 +76,7 @@ class Mongodb < ClusterManagement::Service
       raise "unknown error, tmp backup file #{tmp_dump.path} hasn't been created!" unless tmp_dump.exist?
       
       logger.info "  restoring :#{service_name}"
-      box.bash("mongodb restore #{tmp_dump.path}", /MongoDB has been restored/)
+      box.bash "mongodb restore #{tmp_dump.path}" #, /MongoDB has been restored/
     end
     logger.info ":#{service_name} has been restored from #{path}"    
     self
