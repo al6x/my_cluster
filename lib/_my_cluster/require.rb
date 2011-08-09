@@ -18,7 +18,6 @@ autoload_dir "#{root_path}/lib"
 # Libraries
 # 
 require '_cluster_management_ext/service'
-require '_cluster_management_ext/project'
 
 
 #

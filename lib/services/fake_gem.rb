@@ -10,9 +10,11 @@ class FakeGem < ClusterManagement::Service
       
       box["#{config.projects_path}/fake_gem"].destroy
       fg_git = "git://github.com/alexeypetrushin/fake_gem.git"
-      box[config.projects_path].bash "git clone #{fg_git}"
-
-      box["#{config.projects_path}/fake_gem/lib/fake_gem.rb"].must.exist
+      projects = box[config.projects_path]
+      projects.create
+      projects.bash "git clone #{fg_git}"
+      
+      projects['fake_gem/lib/fake_gem.rb'].must.exist
     end
     self
   end  
