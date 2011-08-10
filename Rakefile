@@ -14,6 +14,10 @@ task :basic do
   cluster.services.basic.install
 end
 
+task :dev do
+  cluster.services.mongodb.install
+end
+
 desc 'install to cluster'
 task :install do
   cluster.services do

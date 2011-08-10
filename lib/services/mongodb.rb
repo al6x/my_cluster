@@ -1,6 +1,6 @@
 class Mongodb < ClusterManagement::Service
   tag :db
-  version 3
+  version 4
   
   def install
     services.basic.install
@@ -23,7 +23,7 @@ class Mongodb < ClusterManagement::Service
 
       box.tmp do |tmp|
         template = "#{__FILE__.dirname}/mongodb.sh.erb".to_file
-        script = tmp[template.name].write template.render(data_path: data_path)
+        script = tmp['mongodb.sh'].write template.render(data_path: data_path)
         script.append_to_environment_of box
       end
       
@@ -105,7 +105,7 @@ class Mongodb < ClusterManagement::Service
   # end
   
   def data_path
-    "#{config.data_path!}/db"
+    "#{config.data_path}/db"
   end
   
   protected

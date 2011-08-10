@@ -61,9 +61,10 @@ class FireNet < ClusterManagement::Service
         fgem.bash "git reset HEAD --hard && git pull"
       end
       
-      logger.info "  updating gems"
-      fire_net = projects / NAME
-      fire_net.bash 'bundle install', /Your bundle is complete/
+      logger.info "  skipping gems"
+      # logger.info "  updating gems"
+      # fire_net = projects / NAME
+      # fire_net.bash 'bundle install', /Your bundle is complete/
     end
     
     self
