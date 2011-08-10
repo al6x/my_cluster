@@ -1,38 +1,38 @@
 rake deploy
 
-installing :os to 46.137.176.20
-installing :system_tools to 46.137.176.20
-installing :ruby to 46.137.176.20
+installing :os to my.aws.amazon.com
+installing :system_tools to my.aws.amazon.com
+installing :ruby to my.aws.amazon.com
   building
   configuring
   updating environment
-installing :git to 46.137.176.20
-installing :security to 46.137.176.20
-installing :manual_management to 46.137.176.20
-installing :fake_gem to 46.137.176.20
-installing :custom_ruby to 46.137.176.20
+installing :git to my.aws.amazon.com
+installing :security to my.aws.amazon.com
+installing :manual_management to my.aws.amazon.com
+installing :fake_gem to my.aws.amazon.com
+installing :custom_ruby to my.aws.amazon.com
   fake_gem env
   rspec
-installing :fs to 46.137.176.20
-installing :thin to 46.137.176.20
-installing :code_highlighter to 46.137.176.20
-installing :mail to 46.137.176.20
-installing :mongodb to 46.137.176.20
-installing :nginx to 46.137.176.20
-installing :fire_net to 46.137.176.20
+installing :fs to my.aws.amazon.com
+installing :thin to my.aws.amazon.com
+installing :code_highlighter to my.aws.amazon.com
+installing :mail to my.aws.amazon.com
+installing :mongodb to my.aws.amazon.com
+installing :nginx to my.aws.amazon.com
+installing :fire_net to my.aws.amazon.com
   installing fake gems
   installing gems
-updating :fire_net on 46.137.176.20
+updating :fire_net on my.aws.amazon.com
   updating fake gems
   updating gems
-starting :nginx on 46.137.176.20
-deploying :fire_net to 46.137.176.20
+starting :nginx on my.aws.amazon.com
+deploying :fire_net to my.aws.amazon.com
   configuring
   symlinks
   copying assets
   restarting thin
-stopping :thin on 46.137.176.20
-starting :thin on 46.137.176.20
+stopping :thin on my.aws.amazon.com
+starting :thin on my.aws.amazon.com
 
 
 
