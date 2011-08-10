@@ -8,7 +8,7 @@ Here's how I'm using it, let's say I want to deploy my app to clean box(es) with
 rake deploy
 ```
 
-It's clever ennought to determine that before deploying app it needs to prepare clean box, and It will:
+It's clever ennought to determine that before deploying app it needs to prepare machines, and It will:
 
 - install & configure: git, mail, ruby, mongodb, nginx
 - ensure that mongodb and nginx is running
