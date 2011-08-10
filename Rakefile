@@ -5,30 +5,14 @@ require 'my_cluster/require'
 require 'rake_ext'
 delete_task :default
 
-desc 'deploy to cluster'
+desc 'deploy app'
 task :deploy do
   cluster.services.fire_net.deploy
 end
 
-task :basic do
+desc 'install basic tools'
+task :install_basic do
   cluster.services.basic.install
-end
-
-task :dev do
-  cluster.services.mongodb.install
-end
-
-desc 'install to cluster'
-task :install do
-  cluster.services do
-    mongodb.install
-    fs.install
-    
-    thin.install
-    fire_net.install
-    
-    nginx.install
-  end
 end
 
 desc "backup database and files"

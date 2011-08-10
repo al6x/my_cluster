@@ -10,7 +10,7 @@ rake deploy
 
 It's clever ennought to determine that before deploying app it needs to prepare machines, and It will:
 
-- install & configure: git, mail, ruby, mongodb, nginx
+- install & configure: git, mail, ruby, mongodb, nginx, ...
 - ensure that mongodb and nginx is running
 - only then it will deploy the application
 
