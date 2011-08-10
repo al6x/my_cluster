@@ -1,6 +1,6 @@
 Configuration of my cluster, maybe it will be also usefull for Yours (also it can be seen as a sample usage of [Vfs][vfs], [Vos][vos] and [ClusterManagement][cluster_management] tools).
 
-It not only automates the deployment process, but **it fully configures servers**, see below.
+It not only automates the deployment process, **it fully configures servers** from the clean state, see below.
 
 Here's how I'm using it, let's say I want to deploy my app to clean box(es) with remote ssh access, all I need to do - type:
 
