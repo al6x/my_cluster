@@ -1,4 +1,4 @@
-# Tools for cluster management.
+# Sample configuration
 
 Configuration of my cluster, it prepares, updates and deploys my app. Maybe maybe it will be also usefull for Yours, also it can be used as a sample usage of [Vfs][vfs], [Vos][vos] and [ClusterManagement][cluster_management] tools.
 
