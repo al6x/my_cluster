@@ -3,7 +3,7 @@ require 'cluster_management'
 dir = "#{__FILE__}/../../..".to_dir.to_s
 
 require 'my_cluster/service'
-autoload_dir "#{dir}/lib"
+autoload_path "#{dir}/lib"
 
 # Configuring
 ClusterManagement::Config.class_eval do
