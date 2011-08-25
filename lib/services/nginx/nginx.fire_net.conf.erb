@@ -11,33 +11,33 @@ server {
 
   access_log  /var/log/nginx/localhost.access.log;
 
-  
-  # 
+
+  #
   # piwik
-  # 
+  #
   # location /piwik {
   #   rewrite ^/piwik/(.*)$ $1
   #   root   /srv/www/piwik/public_html;
   #   index  index.html index.htm index.php;
   # }
-  #  
-  # location ~ /piwik.*\.php$ {    
+  #
+  # location ~ /piwik.*\.php$ {
   #   rewrite ^/piwik/(.*)$ $1
   #   include /etc/nginx/fastcgi_params;
   #   fastcgi_pass  127.0.0.1:9000;
   #   fastcgi_index index.php;
   #   fastcgi_param  SCRIPT_FILENAME  /srv/www/piwik/public_html$fastcgi_script_name;
-  # }  
-  
+  # }
+
 
   # application
   location / {
     proxy_pass  http://app_cluster;
-    
+
     proxy_set_header  X-Real-IP  $remote_addr;
     proxy_set_header  X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Host $http_host;
-    
+
     gzip  on;
     gzip_http_version 1.0;
     gzip_vary on;
@@ -45,18 +45,18 @@ server {
     gzip_proxied any;
     # gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
     gzip_buffers 16 8k;
-  }   
+  }
 
   # application assets (js, css)
   location ~ /favicon {
     root   <%= static %>;
   }
-  
-  location ~ /static/ {   
+
+  location ~ /static/ {
     root   <%= static %>;
-    
+
     expires 15m;
-    
+
     gzip  on;
     gzip_http_version 1.0;
     gzip_vary on;
@@ -65,9 +65,9 @@ server {
     gzip_types text/plain text/css application/json application/x-javascript text/xml application/xml application/xml+rss text/javascript;
     gzip_buffers 16 8k;
   }
-  
+
   # file storage
   location /fs/ {
-    root   <%= static %>;   
+    root   <%= static %>;
   }
 }
