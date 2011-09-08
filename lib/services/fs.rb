@@ -79,7 +79,7 @@ class Fs < ClusterManagement::Service
   #   logger.info "  copying"
   #   fs_tar = fs_dir.parent.file 'fs.tar.gz'
   #   fs_tar.destroy
-  #   restore_path.copy_to! fs_tar
+  #   restore_path.copy_to fs_tar
   #
   #   logger.info "  uncompressing"
   #   box.bash "tar -zxvf #{fs_tar.path} -C #{fs_dir.path}"

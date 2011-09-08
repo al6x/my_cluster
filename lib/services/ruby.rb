@@ -21,7 +21,7 @@ class Ruby < ClusterManagement::Service
       end
 
       logger.info '  configuring'
-      box.home('.gemrc').write! "gem: --no-ri --no-rdoc\n"
+      box.home('.gemrc').write "gem: --no-ri --no-rdoc\n"
 
       logger.info '  updating environment'
       bindir = "#{installation_dir}/bin"

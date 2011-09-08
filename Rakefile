@@ -25,8 +25,8 @@ task :backup do
   cluster.services.fs.dump_to backup_dir['fs'].path
 end
 
-desc "restore database and files"
-task :restore do
+desc "restore database"
+task :restore_db do
   raise "Are You shure? Comment out this line to proceed."
 
   backup_dir = ENV['path'] || raise("backup path not specified (use path=... argument)!")
@@ -34,5 +34,15 @@ task :restore do
   raise "backup path '#{backup_dir.path}' not exist!" unless backup_dir.exist?
 
   cluster.services.mongodb.restore_from backup_dir['db'].path
+end
+
+desc "restore files"
+task :restore_fs do
+  raise "Are You shure? Comment out this line to proceed."
+
+  backup_dir = ENV['path'] || raise("backup path not specified (use path=... argument)!")
+  backup_dir = backup_dir.to_dir
+  raise "backup path '#{backup_dir.path}' not exist!" unless backup_dir.exist?
+
   cluster.services.fs.restore_from backup_dir['fs'].path
 end

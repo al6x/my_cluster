@@ -13,13 +13,13 @@ class Nginx < ClusterManagement::Service
 
       # writing configs
       configs_src = "#{__FILE__.dirname}/nginx".to_dir
-      configs_src.file('nginx.conf').copy_to! box['/etc/nginx/nginx.conf']
+      configs_src.file('nginx.conf').copy_to box['/etc/nginx/nginx.conf']
 
       nginx_config = config.nginx['fire_net']
       nginx_config[:static] = "#{config.projects_path}/4ire.net/runtime/public"
       {'nginx.fire_net.conf.erb' => 'nginx.fire_net.conf'}.each do |template, fname|
         data = configs_src[template].render nginx_config
-        box["/etc/nginx/#{fname}"].write! data
+        box["/etc/nginx/#{fname}"].write data
       end
 
       box.bash 'nginx configtest', /^Testing nginx configuration: nginx.$/

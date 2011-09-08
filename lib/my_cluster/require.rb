@@ -1,4 +1,5 @@
 require 'cluster_management'
+require 'vos/drivers/ssh'
 
 dir = "#{__FILE__}/../../..".to_dir.to_s
 
