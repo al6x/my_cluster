@@ -44,6 +44,7 @@ class FireNet < ClusterManagement::Service
         projects.bash "git clone #{git}"
       end
 
+      # logger.info "  skipping gems"
       logger.info "  installing gems"
       box.bash 'gem install bundler', /Successfully/
       fire_net = projects / NAME
