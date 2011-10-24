@@ -1,0 +1,1 @@
+- remove rad_assets rad_js rad_bag rad_store

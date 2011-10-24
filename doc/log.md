@@ -104,38 +104,32 @@ installing :fire_net to my.amazonaws.com
     cloning class_loader
     cloning micon
     cloning mongoid_misc
-    cloning rad_assets
     cloning rad_common_interface
     cloning rad_core
     cloning rad_face
-    cloning rad_js
     cloning rad_kit
     cloning rad_themes
     cloning rad_users
     cloning ruby_ext
     cloning vfs
-    cloning rad_bag
     cloning rad_saas
-    cloning rad_store
+    cloning rad_sbs
     cloning 4ire.net
   installing gems
 updating :fire_net on my.amazonaws.com
     updating class_loader
     updating micon
     updating mongoid_misc
-    updating rad_assets
     updating rad_common_interface
     updating rad_core
     updating rad_face
-    updating rad_js
     updating rad_kit
     updating rad_themes
     updating rad_users
     updating ruby_ext
     updating vfs
-    updating rad_bag
     updating rad_saas
-    updating rad_store
+    updating rad_sbs
     updating 4ire.net
   updating gems
 deploying :fire_net to my.amazonaws.com

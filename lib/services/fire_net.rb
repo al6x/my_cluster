@@ -8,11 +8,9 @@ class FireNet < ClusterManagement::Service
     micon: 'git://github.com/alexeypetrushin/micon.git',
     # mongoid_misc: 'git://github.com/alexeypetrushin/mongoid_misc.git',
 
-    rad_assets: 'git://github.com/alexeypetrushin/rad_assets.git',
     rad_common_interface: 'git://github.com/alexeypetrushin/rad_common_interface.git',
     rad_core: 'git://github.com/alexeypetrushin/rad_core.git',
     rad_face: 'git://github.com/alexeypetrushin/rad_face.git',
-    rad_js: 'git://github.com/alexeypetrushin/rad_js.git',
     rad_kit: 'git://github.com/alexeypetrushin/rad_kit.git',
     rad_themes: 'git://github.com/alexeypetrushin/rad_themes.git',
     rad_users: 'git://github.com/alexeypetrushin/rad_users.git',
@@ -23,9 +21,8 @@ class FireNet < ClusterManagement::Service
     mongodb_model: 'git://github.com/alexeypetrushin/mongodb_model.git',
     file_model: 'git://github.com/alexeypetrushin/file_model.git',
 
-    rad_bag: 'git@github.com:alexeypetrushin/rad_bag.git',
-    rad_saas: 'git@github.com:alexeypetrushin/rad_saas.git',
-    rad_store: 'git@github.com:alexeypetrushin/rad_store.git'
+    rad_sbs: 'git@github.com:alexeypetrushin/rad_sbs.git',
+    rad_saas: 'git@github.com:alexeypetrushin/rad_saas.git'
   }
   NAME = '4ire.net'
   GIT = 'git@github.com:alexeypetrushin/4ire.net.git'
