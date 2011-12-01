@@ -11,7 +11,7 @@ class Fs < ClusterManagement::Service
       logger.info "installing :#{service_name} to #{box}"
       box[data_path].create
 
-      box[data_path].dir?.must_be.true
+      box[data_path].dir?.must.be_true
     end
     self
   end

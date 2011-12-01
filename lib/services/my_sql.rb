@@ -13,7 +13,7 @@ class MySql < ClusterManagement::Service
       box[data_path].create
 
       box.bash 'mysql status', /MySQL is not running/
-      box[data_path].dir?.must_be.true
+      box[data_path].dir?.must.be_true
     end
     self
   end

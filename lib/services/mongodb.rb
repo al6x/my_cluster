@@ -30,14 +30,14 @@ class Mongodb < ClusterManagement::Service
       # box[data_path].create
 
       box.bash 'mongo --version', /MongoDB/
-      box[data_path].dir?.must_be.true
+      box[data_path].dir?.must.be_true
     end
     self
   end
 
   def dump_to path
     raise "backup path #{path} already exist!" if path.to_entry.exist?
-    must_be_running
+    must.be_started
 
     logger.info "dumping :#{service_name} to #{path}"
     box.tmp do |tmp|
@@ -63,7 +63,7 @@ class Mongodb < ClusterManagement::Service
 
   def restore_from path
     raise "backup path #{path} not exist!" unless path.to_entry.exist?
-    must_be_running
+    must.be_started
 
     logger.info "restoring :#{service_name} from #{path}"
     box.tmp do |tmp|
@@ -107,9 +107,4 @@ class Mongodb < ClusterManagement::Service
   def data_path
     "#{config.data_path}/db"
   end
-
-  protected
-    def must_be_running
-      raise "MongoDB is not running" unless started?
-    end
 end
